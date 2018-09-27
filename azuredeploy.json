@@ -16,6 +16,12 @@
           "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
         }
       },
+      "servicePrincipalClientKey": {
+        "type": "string",
+        "metadata": {
+          "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+        }
+      },
       "templateURL": {
           "type": "string",
           "metadata": {
@@ -28,13 +34,27 @@
         "metadata": {
           "description": "Admin user account name."
         },
-        "minLength": 3
+        "minLength": 5
       },
       "adminSshKey": {
         "type": "securestring",
         "metadata": {
           "description": "Admin user public ssh key."
         }
+      },
+      "dbUserName": {
+          "type": "string",
+          "metadata": {
+              "description": "Database SA Account UserName"
+          },
+          "minLength": 5
+      },
+      "dbPasword": {
+          "type": "securestring",
+          "metadata": {
+              "description": "Database SA Account Password"
+          },
+          "minLength": 10
       }
     },
     "variables": {},
@@ -73,11 +93,20 @@
             "servicePrincipalAppId": {
               "value": "[parameters('servicePrincipalClientId')]"
             },
+            "servicePrincipalClientKey": {
+                "value": "[parameters('servicePrincipalClientKey')]"
+              },
             "adminUserName": {
               "value": "[parameters('adminUserName')]"
             },
             "publicSSHKeyData": {
               "value": "[parameters('adminSshKey')]"
+            },
+            "dbUserName": {
+                "value": "[parameters('dbUserName')]"
+            },
+            "dbPassword": {
+                "value": "[parameters('dbPasword')]"
             }
           }
         }

@@ -8,10 +8,16 @@
           "description": "Small unique string."
         }
       },
-      "servicePrincipalAppId": {
+      "servicePrincipalClientId": {
         "type": "string",
         "metadata": {
           "description": "Service Principal App ID (also called Client ID) that has contributor rights to the subscription used for this deployment. It is used by Spinnaker to dynamically manage resources."
+        }
+      },
+      "servicePrincipalClientKey": {
+        "type": "string",
+        "metadata": {
+          "description": "Service Principal App Secret (also called Client Key) that has contributor rights to the subscription used for this deployment. It is used by Spinnaker to dynamically manage resources."
         }
       },
       "adminUserName": {
@@ -28,6 +34,21 @@
           "description": "SSH public key to set on linux VM"
         },
         "defaultValue": "none"
+      },
+      "dbUserName": {
+        "type": "string",
+        "metadata": {
+          "description": "Database Server Admin Name."
+        },
+        "defaultValue": "azureuser",
+        "minLength": 5
+      },
+      "dbPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Database Server Admin Password."
+        },
+        "minLength": 10
       }
     },
     "variables": {
@@ -50,7 +71,7 @@
           "accessPolicies": [
             {
               "tenantId": "[subscription().tenantId]",
-              "objectId": "[parameters('servicePrincipalAppId')]",
+              "objectId": "[parameters('servicePrincipalClientId')]",
               "permissions": {
                 "keys": [
                   "all"
@@ -83,6 +104,50 @@
             "apiVersion": "2015-06-01",
             "properties": {
               "value": "[parameters('publicSSHKeyData')]"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+            ]
+          },
+          {
+            "type": "secrets",
+            "name": "clientId",
+            "apiVersion": "2015-06-01",
+            "properties": {
+              "value": "[parameters('servicePrincipalClientId')]"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+            ]
+          },
+          {
+            "type": "secrets",
+            "name": "clientSecret",
+            "apiVersion": "2015-06-01",
+            "properties": {
+              "value": "[parameters('servicePrincipalClientKey')]"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+            ]
+          },
+          {
+            "type": "secrets",
+            "name": "dbUserName",
+            "apiVersion": "2015-06-01",
+            "properties": {
+              "value": "[parameters('dbUserName')]"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+            ]
+          },
+          {
+            "type": "secrets",
+            "name": "dbPasword",
+            "apiVersion": "2015-06-01",
+            "properties": {
+              "value": "[parameters('dbPassword')]"
             },
             "dependsOn": [
               "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
