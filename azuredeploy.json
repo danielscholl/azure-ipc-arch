@@ -219,7 +219,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployBation.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployBastion.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
