@@ -219,7 +219,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployJumpServer.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployBation.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
