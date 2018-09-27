@@ -1,162 +1,185 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "subnetId": {
-            "type": "string",
-            "metadata": {
-                "description": "Subnet ID to associate VM to."
-            }
-        },
-        "vmName": {
-            "type": "string",
-            "metadata": {
-                "description": "Virtual Machine 1 Server Name."
-            },
-            "defaultValue": "bastion",
-            "minLength": 1
-        },
-        "vmSize": {
-            "type": "string",
-            "metadata": {
-                "description": "The virtual machine server size."
-            },
-            "defaultValue": "Standard_A2"
-        },
-        "adminUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Linux servers admin user account name."
-            },
-            "defaultValue": "azureuser",
-            "minLength": 1
-        },
-        "publicSSHKeyData": {
-            "type": "string",
-            "metadata": {
-                "description": "SSH rsa public key file as a string."
-            }
-        },
-        "ubuntuOSVersion": {
-            "type": "string",
-            "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-            },
-            "defaultValue": "16.04.0-LTS",
-            "allowedValues": [
-                "12.04.5-LTS",
-                "14.04.5-LTS",
-                "15.10",
-                "16.04.0-LTS"
-            ]
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID to associate VM to."
+      }
     },
-    "variables": {
-        "NicName": "[concat(parameters('vmName'), '-nic')]",
-        "PublicIpName": "[concat(parameters('vmName'), '-ip')]",
-        "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine 1 Server Name."
+      },
+      "defaultValue": "bastion",
+      "minLength": 1
     },
-    "resources": [
-        {
-            "comments": "## Public IP Address ##",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[variables('PublicIpName')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "Public IP Address - JumpServer"
-            },
-            "properties": {
-                "publicIPAllocationMethod": "Dynamic"
-            }
-        },
-        {
-            "comments": "## Network Interface ##",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('NicName')]",
-            "apiVersion": "2016-03-30",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "Network Interface - JumpServer"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('PublicIpName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPName'))]"
-                            },
-                            "subnet": {
-                                "id": "[parameters('subnetId')]"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "comments": "## Virtual Machine ##",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmName')]",
-            "apiVersion": "2016-04-30-preview",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "displayName": "Virtual Machine - Bastion"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('NicName'))]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
-                },
-                "osProfile": {
-                    "computerName": "[parameters('vmName')]",
-                    "adminUsername": "[parameters('adminUserName')]",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": true,
-                        "ssh": {
-                            "publicKeys": [
-                                {
-                                    "path": "[variables('sshKeyPath')]",
-                                    "keyData": "[parameters('publicSSHKeyData')]"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "createOption": "FromImage"
-                    }
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('NicName'))]"
-                        }
-                    ]
-                }
-            }
-        }
-    ],
-    "outputs": {
-        "virtualMachine": {
-            "type": "object",
-            "value": {
-                "ip": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('PublicIpName'))).IpAddress]"
-            }
-        }
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The virtual machine server size."
+      },
+      "defaultValue": "Standard_A2"
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Linux servers admin user account name."
+      },
+      "defaultValue": "azureuser",
+      "minLength": 1
+    },
+    "publicSSHKeyData": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH rsa public key file as a string."
+      }
+    },
+    "ubuntuOSVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      },
+      "defaultValue": "16.04.0-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.5-LTS",
+        "15.10",
+        "16.04.0-LTS"
+      ]
     }
+  },
+  "variables": {
+    "NicName": "[concat(parameters('vmName'), '-nic')]",
+    "PublicIpName": "[concat(parameters('vmName'), '-ip')]",
+    "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
+  },
+  "resources": [
+    {
+      "comments": "## Public IP Address ##",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('PublicIpName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Public IP Address - JumpServer"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "comments": "## Network Interface ##",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('NicName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Network Interface - JumpServer"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('PublicIpName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPName'))]"
+              },
+              "subnet": {
+                "id": "[parameters('subnetId')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "comments": "## Virtual Machine ##",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmName')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "Virtual Machine - Bastion"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('NicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('vmName')]",
+          "adminUsername": "[parameters('adminUserName')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "[parameters('publicSSHKeyData')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('NicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "comments": "## Auto Shutdown ##",
+      "name": "[concat('shutdown-computevm-', parameters('vmName'))]",
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2016-05-15",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": {
+          "time": "1800"
+        },
+        "timeZoneId": "Central Standard Time",
+        "notificationSettings": {
+          "status": "Disabled",
+          "timeInMinutes": 30
+        },
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmname'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmname'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "virtualMachine": {
+      "type": "object",
+      "value": {
+        "ip": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('PublicIpName'))).IpAddress]"
+      }
+    }
+  }
 }
