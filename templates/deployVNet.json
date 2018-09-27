@@ -333,10 +333,10 @@
           {
             "name": "[variables('Subnet4Name')]",
             "properties": {
-              "addressPrefix": "[parameters('Subnet4Prefix')]"
-            },
-            "networkSecurityGroup": {
-              "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg4Name'))]"
+              "addressPrefix": "[parameters('Subnet4Prefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg4Name'))]"
+              }
             }
           },
           {
