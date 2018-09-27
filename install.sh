@@ -115,8 +115,8 @@ function CreateSSHKeys() {
 ## Azure Intialize           ##
 ###############################
 
-tput setaf 2; echo 'Logging in and setting subscription...' ; tput sgr0
-az account set --subscription ${AZURE_SUBSCRIPTION}
+# tput setaf 2; echo 'Logging in and setting subscription...' ; tput sgr0
+# az account set --subscription ${AZURE_SUBSCRIPTION}
 
 tput setaf 2; echo 'Creating Resource Group...' ; tput sgr0
 RESOURCE_GROUP="$INITIALS-arch"
