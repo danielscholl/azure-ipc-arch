@@ -1,9 +1,27 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "initials": {
-            "value": "ipc"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "initials": {
+      "value": "ipc"
+    },
+    "vnetPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "frontCIDR": {
+      "value": "10.0.0.0/20"
+    },
+    "backCIDR": {
+      "value": "10.0.16.0/24"
+    },
+    "containerCIDR": {
+      "value": "10.0.17.0/24"
+    },
+    "manageCIDR": {
+      "value": "10.0.18.0/24"
+    },
+    "gatewayCIDR": {
+      "value": "10.0.20.0/28"
     }
+  }
 }

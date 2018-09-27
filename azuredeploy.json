@@ -1,126 +1,217 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "initials": {
-        "type": "string",
-        "metadata": {
-          "description": "Small unique string."
-        },
-        "minLength": 2,
-        "maxLength": 5
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "initials": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
       },
-      "servicePrincipalClientId": {
-        "type": "string",
-        "metadata": {
-          "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
-        }
+      "minLength": 2,
+      "maxLength": 5
+    },
+    "templateURL": {
+      "type": "string",
+      "metadata": {
+        "description": "URL Location on where to find the templates"
       },
-      "servicePrincipalClientKey": {
-        "type": "string",
-        "metadata": {
-          "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
-        }
-      },
-      "templateURL": {
-          "type": "string",
-          "metadata": {
-              "description": "URL Location on where to find the templates"
-          },
-          "defaultValue": "https://raw.githubusercontent.com/danielscholl/azure-ipc-arch/master/templates/"
-      },
-      "adminUserName": {
-        "type": "string",
-        "metadata": {
-          "description": "Admin user account name."
-        },
-        "minLength": 5
-      },
-      "adminSshKey": {
-        "type": "securestring",
-        "metadata": {
-          "description": "Admin user public ssh key."
-        },
-        "minLength": 10
-      },
-      "dbUserName": {
-          "type": "string",
-          "metadata": {
-              "description": "Database SA Account UserName"
-          },
-          "minLength": 5
-      },
-      "dbPasword": {
-          "type": "securestring",
-          "metadata": {
-              "description": "Database SA Account Password"
-          },
-          "minLength": 10
+      "defaultValue": "https://raw.githubusercontent.com/danielscholl/azure-ipc-arch/master/templates/"
+    },
+    "servicePrincipalClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
       }
     },
-    "variables": {},
-    "resources": [
-      {
-        "name": "TemplateStorage",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2015-01-01",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "storageAccountType": {
-              "value": "Standard_LRS"
-            }
-          }
-        }
+    "servicePrincipalClientKey": {
+      "type": "string",
+      "metadata": {
+        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+      }
+    },
+    "adminUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin user account name."
       },
-      {
-        "name": "TemplateKeyVault",
-        "type": "Microsoft.Resources/deployments",
-        "apiVersion": "2015-01-01",
-        "properties": {
-          "mode": "Incremental",
-          "templateLink": {
-            "uri": "[concat(parameters('templateURL'), 'deployKeyVault.json')]",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "unique": {
-              "value": "[parameters('initials')]"
-            },
-            "servicePrincipalClientId": {
-              "value": "[parameters('servicePrincipalClientId')]"
-            },
-            "servicePrincipalClientKey": {
-                "value": "[parameters('servicePrincipalClientKey')]"
-              },
-            "adminUserName": {
-              "value": "[parameters('adminUserName')]"
-            },
-            "publicSSHKeyData": {
-              "value": "[parameters('adminSshKey')]"
-            },
-            "dbUserName": {
-                "value": "[parameters('dbUserName')]"
-            },
-            "dbPassword": {
-                "value": "[parameters('dbPasword')]"
-            }
+      "minLength": 5
+    },
+    "adminSshKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin user public ssh key."
+      },
+      "minLength": 10
+    },
+    "dbUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "Database SA Account UserName"
+      },
+      "minLength": 5
+    },
+    "dbPasword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Database SA Account Password"
+      },
+      "minLength": 10
+    },
+    "vnetPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.0.0/16"
+    },
+    "frontCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 1 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.0.0/20"
+    },
+    "backCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 2 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.16.0/24"
+    },
+    "containerCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 3 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.17.0/24"
+    },
+    "manageCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 4 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.18.0/24"
+    },
+    "gatewayCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 4 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.20.0/28"
+    },
+    "remoteAccessACL": {
+      "type": "string",
+      "metadata": {
+        "description": "Allow SSH Remote Access IP (CIDR)"
+      },
+      "defaultValue": "Internet"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "TemplateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
           }
         }
       }
-    ],
-    "outputs": {
-      "storageAccount": {
-        "type": "object",
-        "value": "[reference('TemplateStorage').outputs.storageAccount.value]"
-      },
-      "keyVault": {
-        "type": "object",
-        "value": "[reference('TemplateKeyVault').outputs.keyVault.value]"
+    },
+    {
+      "name": "TemplateKeyVault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployKeyVault.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "unique": {
+            "value": "[parameters('initials')]"
+          },
+          "servicePrincipalClientId": {
+            "value": "[parameters('servicePrincipalClientId')]"
+          },
+          "servicePrincipalClientKey": {
+            "value": "[parameters('servicePrincipalClientKey')]"
+          },
+          "adminUserName": {
+            "value": "[parameters('adminUserName')]"
+          },
+          "publicSSHKeyData": {
+            "value": "[parameters('adminSshKey')]"
+          },
+          "dbUserName": {
+            "value": "[parameters('dbUserName')]"
+          },
+          "dbPassword": {
+            "value": "[parameters('dbPasword')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateVNet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployVNet.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "unique": {
+            "value": "[parameters('initials')]"
+          },
+          "vnetPrefix": {
+            "value": "[parameters('vnetPrefix')]"
+          },
+          "subnet1Prefix": {
+            "value": "[parameters('frontCIDR')]"
+          },
+          "subnet2Prefix": {
+            "value": "[parameters('backCIDR')]"
+          },
+          "subnet3Prefix": {
+            "value": "[parameters('containerCIDR')]"
+          },
+          "subnet4Prefix": {
+            "value": "[parameters('manageCIDR')]"
+          },
+          "subnet5Prefix": {
+            "value": "[parameters('gatewayCIDR')]"
+          },
+          "remoteAccessACL": {
+            "value": "[parameters('remoteAccessACL')]"
+          }
+        }
       }
     }
+  ],
+  "outputs": {
+    "storageAccount": {
+      "type": "object",
+      "value": "[reference('TemplateStorage').outputs.storageAccount.value]"
+    },
+    "keyVault": {
+      "type": "object",
+      "value": "[reference('TemplateKeyVault').outputs.keyVault.value]"
+    },
+    "virtualNetwork": {
+      "type": "object",
+      "value": "[reference('TemplateVNet').outputs.virtualNetwork.value]"
+    }
   }
+}
