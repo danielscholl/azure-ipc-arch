@@ -366,12 +366,6 @@
         "subnet4Id": "[variables('subnet4Id')]",
         "subnet5Id": "[variables('subnet5Id')]"
       }
-    },
-    "securityGroups": {
-      "type": "object",
-      "value": {
-        "remoteAccessId": "[variables('Nsg5Id')]"
-      }
     }
   }
 }

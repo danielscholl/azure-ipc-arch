@@ -264,10 +264,6 @@
     "virtualNetwork": {
       "type": "object",
       "value": "[reference('TemplateVNet').outputs.virtualNetwork.value]"
-    },
-    "virtualMachine": {
-      "type": "object",
-      "value": "[reference('TemplateBastionHost').outputs.virtualMachine.value]"
     }
   }
 }
