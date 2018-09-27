@@ -22,6 +22,9 @@
     },
     "gatewayCIDR": {
       "value": "10.0.20.0/28"
+    },
+    "bastionSize": {
+      "value": "Standard_B1ms"
     }
   }
 }

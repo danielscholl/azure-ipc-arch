@@ -105,9 +105,18 @@
         "description": "Allow SSH Remote Access IP (CIDR)"
       },
       "defaultValue": "Internet"
+    },
+    "bastionSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Machine Size"
+      },
+      "defaultValue": "Standard_B1ms"
     }
   },
-  "variables": {},
+  "variables": {
+    "bastionHostName": "bastion"
+  },
   "resources": [
     {
       "name": "TemplateStorage",
@@ -198,6 +207,49 @@
           }
         }
       }
+    },
+    {
+      "name": "TemplateBastionHost",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateKeyVault",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployJumpServer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet4Id]"
+          },
+          "vmName": {
+            "value": "[variables('bastionHostName')]"
+          },
+          "vmSize": {
+            "value": "[parameters('bastionSize')]"
+          },
+          "adminUserName": {
+            "reference": {
+              "keyVault": {
+                "id": "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.KeyVault/vaults/{}"
+              },
+              "secretName": "adminUserName"
+            },
+            "publicSSHKeyData": {
+              "reference": {
+                "keyVault": {
+                  "id": "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.KeyVault/vaults/{}"
+                },
+                "secretName": "sshPublicKey"
+              }
+            }
+          }
+        }
+      }
     }
   ],
   "outputs": {
@@ -212,6 +264,10 @@
     "virtualNetwork": {
       "type": "object",
       "value": "[reference('TemplateVNet').outputs.virtualNetwork.value]"
+    },
+    "virtualMachine": {
+      "type": "object",
+      "value": "[reference('TemplateBastionHost').outputs.virtualMachine.value]"
     }
   }
 }
