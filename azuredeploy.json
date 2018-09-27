@@ -40,7 +40,8 @@
         "type": "securestring",
         "metadata": {
           "description": "Admin user public ssh key."
-        }
+        },
+        "minLength": 10
       },
       "dbUserName": {
           "type": "string",
@@ -90,7 +91,7 @@
             "unique": {
               "value": "[parameters('initials')]"
             },
-            "servicePrincipalAppId": {
+            "servicePrincipalClientId": {
               "value": "[parameters('servicePrincipalClientId')]"
             },
             "servicePrincipalClientKey": {

@@ -4,12 +4,6 @@
     "parameters": {
         "initials": {
             "value": "ipc"
-        },
-        "adminUserName": {
-            "value": "azureuser"
-        },
-        "dbUserName": {
-            "value": "azureuser"
         }
     }
 }

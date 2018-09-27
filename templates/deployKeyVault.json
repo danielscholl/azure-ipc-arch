@@ -32,7 +32,7 @@
         "metadata": {
           "description": "SSH public key to set on linux VM"
         },
-        "defaultValue": "none"
+        "minLength": 10
       },
       "dbUserName": {
         "type": "string",

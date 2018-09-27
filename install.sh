@@ -79,10 +79,15 @@ function CreateServicePrincipal() {
         --display-name $PrincipalName \
         --query [].appId -otsv)
 
+      echo "" >> .envrc
+      echo "export CLIENT_ID=${CLIENT_ID}" >> .envrc
       echo "export CLIENT_SECRET=${CLIENT_SECRET}" >> .envrc
     else
         tput setaf 3;  echo "Service Principal $1 already exists."; tput sgr0
-        CLIENT_ID=$_result
+        if [ -z $CLIENT_ID ]; then
+          tput setaf 1; echo 'ERROR: Principal exists but CLIENT_ID not provided' ; tput sgr0
+          exit 1;
+        fi
 
         if [ -z $CLIENT_SECRET ]; then
           tput setaf 1; echo 'ERROR: Principal exists but CLIENT_SECRET not provided' ; tput sgr0
@@ -130,6 +135,7 @@ tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
 az group deployment create --template-file azuredeploy.json  \
     --resource-group $RESOURCE_GROUP \
     --parameters azuredeploy.parameters.json \
-    --parameters servicePrincipalClientId=$CLIENT_ID \
+    --parameters servicePrincipalClientId=$CLIENT_ID --parameters servicePrincipalClientKey=$CLIENT_SECRET \
     --parameters initials=$INITIALS \
-    --parameters adminUserName=$LINUX_USER
+    --parameters adminUserName=$LINUX_USER \
+    --parameters dbUserName=$LINUX_USER
