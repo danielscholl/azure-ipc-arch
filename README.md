@@ -25,5 +25,25 @@ Single Region Deployment:  All resources deployed using a single region.
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
+ ### Manual Installation
+
+__Setup Environment Variables__
+
+Export environment variables required to use the install script.
+
+>A great tool to do this automatically with is [direnv](https://direnv.net/).
+
+```bash
+export AZURE_SUBSCRIPTION="YOUR_SUBSCRIPTION_ID"
+export AZURE_LOCATION="YOUR_REGION"
+```
+
+__Execute the Install__
+
+```bash
+install.sh
+```
+
+
 
 [0]: ./diagrams/architecture.png "Architecture Diagram"
