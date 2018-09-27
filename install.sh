@@ -16,7 +16,7 @@ if [ -f ./.envrc ]; then source ./.envrc; fi
 
 if [ ! -z $1 ]; then INITIALS=$1; fi
 if [ -z $INITIALS ]; then
-  $INITIALS="ipc"
+  INITIALS="ipc"
 fi
 
 if [ -z $AZURE_SUBSCRIPTION ]; then
@@ -79,14 +79,11 @@ function CreateServicePrincipal() {
         --display-name $PrincipalName \
         --query [].appId -otsv)
 
-      echo "export CLIENT_ID=${CLIENT_ID}" >> .envrc
       echo "export CLIENT_SECRET=${CLIENT_SECRET}" >> .envrc
     else
         tput setaf 3;  echo "Service Principal $1 already exists."; tput sgr0
-        if [ -z $CLIENT_ID ]; then
-          tput setaf 1; echo 'ERROR: Principal exists but CLIENT_ID not provided' ; tput sgr0
-          exit 1;
-        fi
+        CLIENT_ID=$_result
+
         if [ -z $CLIENT_SECRET ]; then
           tput setaf 1; echo 'ERROR: Principal exists but CLIENT_SECRET not provided' ; tput sgr0
           exit 1;
@@ -117,11 +114,11 @@ tput setaf 2; echo 'Logging in and setting subscription...' ; tput sgr0
 az account set --subscription ${AZURE_SUBSCRIPTION}
 
 tput setaf 2; echo 'Creating Resource Group...' ; tput sgr0
-RESOURCE_GROUP="$PREFIX-cluster"
+RESOURCE_GROUP="$INITIALS-arch"
 CreateResourceGroup $RESOURCE_GROUP $AZURE_LOCATION
 
 tput setaf 2; echo 'Creating Service Principal...' ; tput sgr0
-PrincipalName="$PREFIX-Principal"
+PrincipalName="$INITIALS-Principal"
 CreateServicePrincipal $PrincipalName
 
 tput setaf 2; echo 'Creating SSH Keys...' ; tput sgr0
@@ -129,10 +126,10 @@ AZURE_USER=$(az account show --query user.name -otsv)
 LINUX_USER=(${AZURE_USER//@/ })
 CreateSSHKeys $AZURE_USER
 
-# tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
-# az group deployment create --template-file azuredeploy.json  \
-#     --resource-group $RESOURCE_GROUP \
-#     --parameters azuredeploy.parameters.json \
-#     --parameters servicePrincipalClientId=$CLIENT_ID \
-#     --parameters initials=$INITIALS \
-#     --parameters linuxAdminUsername=$LINUX_USER
+tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
+az group deployment create --template-file azuredeploy.json  \
+    --resource-group $RESOURCE_GROUP \
+    --parameters azuredeploy.parameters.json \
+    --parameters servicePrincipalClientId=$CLIENT_ID \
+    --parameters initials=$INITIALS \
+    --parameters adminUserName=$LINUX_USER

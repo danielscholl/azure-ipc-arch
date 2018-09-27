@@ -8,8 +8,7 @@
           "description": "Small unique string."
         },
         "minLength": 2,
-        "maxLength": 5,
-        "defaultValue": "ipc"
+        "maxLength": 5
       },
       "servicePrincipalClientId": {
         "type": "string",
