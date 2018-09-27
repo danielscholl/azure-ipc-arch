@@ -19,14 +19,8 @@ if [ -z $INITIALS ]; then
   INITIALS="ipc"
 fi
 
-if [ -z $AZURE_SUBSCRIPTION ]; then
-  tput setaf 1; echo 'ERROR: AZURE_SUBSCRIPTION not provided' ; tput sgr0
-  usage;
-fi
-
 if [ -z $AZURE_LOCATION ]; then
-  tput setaf 1; echo 'ERROR: AZURE_LOCATION not provided' ; tput sgr0
-  usage;
+  AZURE_LOCATION="eastus"
 fi
 
 
@@ -114,9 +108,6 @@ function CreateSSHKeys() {
 ###############################
 ## Azure Intialize           ##
 ###############################
-
-# tput setaf 2; echo 'Logging in and setting subscription...' ; tput sgr0
-# az account set --subscription ${AZURE_SUBSCRIPTION}
 
 tput setaf 2; echo 'Creating Resource Group...' ; tput sgr0
 RESOURCE_GROUP="$INITIALS-arch"
