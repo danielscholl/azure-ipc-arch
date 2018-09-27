@@ -238,14 +238,14 @@
                 "id": "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.KeyVault/vaults/{}"
               },
               "secretName": "adminUserName"
-            },
-            "publicSSHKeyData": {
-              "reference": {
-                "keyVault": {
-                  "id": "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.KeyVault/vaults/{}"
-                },
-                "secretName": "sshPublicKey"
-              }
+            }
+          },
+          "publicSSHKeyData": {
+            "reference": {
+              "keyVault": {
+                "id": "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.KeyVault/vaults/{}"
+              },
+              "secretName": "sshPublicKey"
             }
           }
         }
