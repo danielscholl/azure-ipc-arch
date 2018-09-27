@@ -25,7 +25,6 @@
         "metadata": {
           "description": "Linux servers admin user account name."
         },
-        "defaultValue": "azureuser",
         "minLength": 1
       },
       "publicSSHKeyData": {
@@ -40,7 +39,6 @@
         "metadata": {
           "description": "Database Server Admin Name."
         },
-        "defaultValue": "azureuser",
         "minLength": 5
       },
       "dbPassword": {
