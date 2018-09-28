@@ -44,18 +44,12 @@ function CreateResourceGroup() {
   local _result=$(az group show --name $1)
   if [ "$_result"  == "" ]
     then
-      if [ $(uname -s) == "Darwin"]; then
-        UNIQUE=$(gshuf -i 100-999 -n 1)
-      else
-        UNIQUE=$(shuf -i 100-999 -n 1)
-      fi
       OUTPUT=$(az group create --name $1 \
         --location $2 \
-        --tags RANDOM=$UNIQUE environment="dev" contact=$INITIALS \
+        --tags environment="demo" \
         -ojsonc)
     else
       tput setaf 3;  echo "Resource Group $1 already exists."; tput sgr0
-      UNIQUE=$(az group show --name $1 --query tags.RANDOM -otsv)
     fi
 }
 function CreateServicePrincipal() {

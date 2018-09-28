@@ -118,14 +118,14 @@
       "metadata": {
         "description": "Static IP Address for the Load Balancer."
       },
-      "defaultValue": "10.0.16.4"
+      "defaultValue": "10.0.17.4"
     },
     "backendLoadBalanceIP": {
       "type": "string",
       "metadata": {
         "description": "Static IP Address for the Load Balancer."
       },
-      "defaultValue": "10.0.17.4"
+      "defaultValue": "10.0.16.4"
     }
   },
   "variables": {
