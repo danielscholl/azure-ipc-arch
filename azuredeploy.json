@@ -326,7 +326,7 @@
         },
         "parameters": {
           "prefix": {
-            "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-be')]"
+            "value": "be"
           },
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
@@ -352,7 +352,7 @@
         },
         "parameters": {
           "prefix": {
-            "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-fe')]"
+            "value": "fe"
           },
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"

@@ -98,7 +98,7 @@
     {
       "comments": "## Network Interface ##",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(parameters('vmName'), copyindex(), '-nic')]",
+      "name": "[concat(parameters('vmName'), 'vm', copyindex(), '-nic')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "tags": {},
