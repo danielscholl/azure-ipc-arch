@@ -126,6 +126,52 @@
         "description": "Static IP Address for the Load Balancer."
       },
       "defaultValue": "10.0.16.4"
+    },
+    "backendServerNamePrefix": {
+      "metadata": {
+        "description": "Backend Virtual Machine Name."
+      },
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "be"
+    },
+    "backendServerSize": {
+      "metadata": {
+        "description": "Backend Virtual Machine Size."
+      },
+      "type": "string",
+      "defaultValue": "Standard_B2s"
+    },
+    "backendServerCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of machines to deploy."
+      },
+      "defaultValue": 2,
+      "minValue": 2
+    },
+    "frontendServerNamePrefix": {
+      "metadata": {
+        "description": "Frontend Virtual Machine Name."
+      },
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "fe"
+    },
+    "frontendServerSize": {
+      "metadata": {
+        "description": "Frontend Virtual Machine Size."
+      },
+      "type": "string",
+      "defaultValue": "Standard_B2s"
+    },
+    "frontendServerCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of machines to deploy."
+      },
+      "defaultValue": 2,
+      "minValue": 2
     }
   },
   "variables": {
@@ -275,7 +321,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployLoadBalancer.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -301,7 +347,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployLoadBalancer.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -313,6 +359,118 @@
           },
           "staticIpAddress": {
             "value": "[parameters('frontendLoadBalanceIP')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateVMasBE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateStorage",
+        "TemplateKeyVault",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployVMas.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "loadBalancerId": {
+            "value": "[reference('TemplateLoadBalancerFE').outputs.loadBalancer.value.id]"
+          },
+          "storageAccount": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+          },
+          "storageKey": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+          },
+          "vmName": {
+            "value": "[parameters('backendServerNamePrefix')]"
+          },
+          "vmSize": {
+            "value": "[parameters('backendServerSize')]"
+          },
+          "numberOfInstances": {
+            "value": "[parameters('backendServerCount')]"
+          },
+          "adminUserName": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "adminUserName"
+            }
+          },
+          "sshKeyData": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "sshPublicKey"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateVMasFE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateStorage",
+        "TemplateKeyVault",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployVMas.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          },
+          "loadBalancerId": {
+            "value": "[reference('TemplateLoadBalancerBE').outputs.loadBalancer.value.id]"
+          },
+          "storageAccount": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+          },
+          "storageKey": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+          },
+          "vmName": {
+            "value": "[parameters('frontendServerNamePrefix')]"
+          },
+          "vmSize": {
+            "value": "[parameters('frontendServerSize')]"
+          },
+          "numberOfInstances": {
+            "value": "[parameters('frontendServerCount')]"
+          },
+          "adminUserName": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "adminUserName"
+            }
+          },
+          "sshKeyData": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "sshPublicKey"
+            }
           }
         }
       }

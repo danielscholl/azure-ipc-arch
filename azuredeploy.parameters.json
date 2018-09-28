@@ -8,14 +8,14 @@
     "vnetPrefix": {
       "value": "10.0.0.0/16"
     },
-    "frontCIDR": {
+    "containerCIDR": {
       "value": "10.0.0.0/20"
+    },
+    "frontCIDR": {
+      "value": "10.0.17.0/24"
     },
     "backCIDR": {
       "value": "10.0.16.0/24"
-    },
-    "containerCIDR": {
-      "value": "10.0.17.0/24"
     },
     "manageCIDR": {
       "value": "10.0.18.0/24"
