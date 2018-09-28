@@ -44,7 +44,11 @@ function CreateResourceGroup() {
   local _result=$(az group show --name $1)
   if [ "$_result"  == "" ]
     then
-      UNIQUE=$(shuf -i 100-999 -n 1)
+      if [ $(uname -s) == "Darwin"]; then
+        UNIQUE=$(gshuf -i 100-999 -n 1)
+      else
+        UNIQUE=$(shuf -i 100-999 -n 1)
+      fi
       OUTPUT=$(az group create --name $1 \
         --location $2 \
         --tags RANDOM=$UNIQUE environment="dev" contact=$INITIALS \

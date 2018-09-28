@@ -64,7 +64,7 @@
       },
       "defaultValue": "10.0.0.0/16"
     },
-    "frontCIDR": {
+    "containerCIDR": {
       "type": "string",
       "metadata": {
         "description": "Subnet 1 Address Prefix (CIDR)"
@@ -78,7 +78,7 @@
       },
       "defaultValue": "10.0.16.0/24"
     },
-    "containerCIDR": {
+    "frontCIDR": {
       "type": "string",
       "metadata": {
         "description": "Subnet 3 Address Prefix (CIDR)"
@@ -112,6 +112,20 @@
         "description": "Virtual Machine Size"
       },
       "defaultValue": "Standard_B1ms"
+    },
+    "frontendLoadBalanceIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Static IP Address for the Load Balancer."
+      },
+      "defaultValue": "10.0.16.4"
+    },
+    "backendLoadBalanceIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Static IP Address for the Load Balancer."
+      },
+      "defaultValue": "10.0.17.4"
     }
   },
   "variables": {
@@ -188,13 +202,13 @@
             "value": "[parameters('vnetPrefix')]"
           },
           "subnet1Prefix": {
-            "value": "[parameters('frontCIDR')]"
+            "value": "[parameters('containerCIDR')]"
           },
           "subnet2Prefix": {
             "value": "[parameters('backCIDR')]"
           },
           "subnet3Prefix": {
-            "value": "[parameters('containerCIDR')]"
+            "value": "[parameters('frontCIDR')]"
           },
           "subnet4Prefix": {
             "value": "[parameters('manageCIDR')]"
@@ -247,6 +261,58 @@
               },
               "secretName": "sshPublicKey"
             }
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateLoadBalancerBE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployLoadBalancer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "unique": {
+            "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-be')]"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "staticIpAddress": {
+            "value": "[parameters('backendLoadBalanceIP')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateLoadBalancerFE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat('https://raw.githubusercontent.com/danielscholl/azure-arm-nested/master/templates/nested/', 'deployLoadBalancer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "unique": {
+            "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-fe')]"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          },
+          "staticIpAddress": {
+            "value": "[parameters('frontendLoadBalanceIP')]"
           }
         }
       }
