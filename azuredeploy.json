@@ -325,7 +325,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "unique": {
+          "prefix": {
             "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-be')]"
           },
           "subnetId": {
@@ -351,7 +351,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "unique": {
+          "prefix": {
             "value": "[concat(parameters('initials'), uniqueString(resourceGroup().id), '-fe')]"
           },
           "subnetId": {
