@@ -326,23 +326,13 @@
         },
         "parameters": {
           "prefix": {
-            "value": "[parameters('initials')]"
+            "value": "be"
           },
-          "sqlAdministratorLogin": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "dbUserName"
-            }
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
           },
-          "sqlAdministratorPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "dbPasword"
-            }
+          "staticIpAddress": {
+            "value": "[parameters('backendLoadBalanceIP')]"
           }
         }
       }
@@ -500,13 +490,23 @@
         },
         "parameters": {
           "prefix": {
-            "value": "fe"
+            "value": "[parameters('initials')]"
           },
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          "sqlAdministratorLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbUserName"
+            }
           },
-          "staticIpAddress": {
-            "value": "[parameters('frontendLoadBalanceIP')]"
+          "sqlAdministratorPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbPasword"
+            }
           }
         }
       }
