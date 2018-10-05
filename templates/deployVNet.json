@@ -353,9 +353,6 @@
                 },
                 {
                   "service": "Microsoft.Storage"
-                },
-                {
-                  "service": "Microsoft.Web"
                 }
               ],
               "networkSecurityGroup": {
