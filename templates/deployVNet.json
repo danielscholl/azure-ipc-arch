@@ -307,9 +307,6 @@
             "name": "[variables('Subnet1Name')]",
             "properties": {
               "addressPrefix": "[parameters('Subnet1Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg1Name'))]"
-              },
               "serviceEndpoints": [
                 {
                   "service": "Microsoft.Sql"
@@ -320,36 +317,16 @@
                 {
                   "service": "Microsoft.Web"
                 }
-              ]
+              ],
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg1Name'))]"
+              }
             }
           },
           {
             "name": "[variables('Subnet2Name')]",
             "properties": {
               "addressPrefix": "[parameters('Subnet2Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg2Name'))]"
-              }
-            },
-            "serviceEndpoints": [
-              {
-                "service": "Microsoft.Sql"
-              },
-              {
-                "service": "Microsoft.Storage"
-              },
-              {
-                "service": "Microsoft.Web"
-              }
-            ]
-          },
-          {
-            "name": "[variables('Subnet3Name')]",
-            "properties": {
-              "addressPrefix": "[parameters('Subnet3Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg3Name'))]"
-              },
               "serviceEndpoints": [
                 {
                   "service": "Microsoft.Sql"
@@ -360,7 +337,30 @@
                 {
                   "service": "Microsoft.Web"
                 }
-              ]
+              ],
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg2Name'))]"
+              }
+            }
+          },
+          {
+            "name": "[variables('Subnet3Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('Subnet3Prefix')]",
+              "serviceEndpoints": [
+                {
+                  "service": "Microsoft.Sql"
+                },
+                {
+                  "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.Web"
+                }
+              ],
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg3Name'))]"
+              }
             }
           },
           {
