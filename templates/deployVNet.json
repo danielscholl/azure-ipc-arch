@@ -309,7 +309,18 @@
               "addressPrefix": "[parameters('Subnet1Prefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg1Name'))]"
-              }
+              },
+              "serviceEndpoints": [
+                {
+                  "service": "Microsoft.Sql"
+                },
+                {
+                  "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.Web"
+                }
+              ]
             }
           },
           {
@@ -319,7 +330,18 @@
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg2Name'))]"
               }
-            }
+            },
+            "serviceEndpoints": [
+              {
+                "service": "Microsoft.Sql"
+              },
+              {
+                "service": "Microsoft.Storage"
+              },
+              {
+                "service": "Microsoft.Web"
+              }
+            ]
           },
           {
             "name": "[variables('Subnet3Name')]",
@@ -327,7 +349,18 @@
               "addressPrefix": "[parameters('Subnet3Prefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg3Name'))]"
-              }
+              },
+              "serviceEndpoints": [
+                {
+                  "service": "Microsoft.Sql"
+                },
+                {
+                  "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.Web"
+                }
+              ]
             }
           },
           {

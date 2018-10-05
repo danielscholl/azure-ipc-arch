@@ -27,14 +27,14 @@
       "metadata": {
         "description": "SQL Server Database Name."
       },
-      "defaultValue": "WideWorldImporters"
+      "defaultValue": "SimpleApp"
     },
     "bacpacURL": {
       "type": "string",
       "metadata": {
         "description": "URL Location of the Database backup (bacpac)."
       },
-      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/WideWorldImporters.bacpac"
+      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/Simpleapp.bacpac"
     },
     "sasToken": {
       "type": "string",
@@ -90,21 +90,7 @@
             "edition": "Basic",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
             "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "Basic",
-            "networkAcls": {
-              "bypass": "None",
-              "virtualNetworkRules": [
-                {
-                  "id": "[parameters('subnetFeId')]",
-                  "action": "Allow"
-                },
-                {
-                  "id": "[parameters('subnetBeId')]",
-                  "action": "Allow"
-                }
-              ],
-              "defaultAction": "Deny"
-            }
+            "requestedServiceObjectiveName": "Basic"
           },
           "resources": [
             {
