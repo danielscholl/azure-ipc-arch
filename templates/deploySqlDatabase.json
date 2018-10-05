@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 9,
+      "defaultValue": "2tier"
+    },
+    "sqlAdministratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin user login name for SQL Server"
+      },
+      "defaultValue": "azureuser"
+    },
+    "sqlAdministratorPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin user password for SQL Server"
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "SQL Server Database Name."
+      },
+      "defaultValue": "SimpleApp"
+    },
+    "bacpacURL": {
+      "type": "string",
+      "metadata": {
+        "description": "URL Location of the Database backup (bacpac)."
+      },
+      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/Simpleapp.bacpac"
+    },
+    "sasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Access Token to retrieve file if required."
+      },
+      "defaultValue": "?"
+    }
+  },
+  "variables": {
+    "sqlserverName": "[concat(parameters('prefix'), uniqueString(resourceGroup().id),'-server')]",
+    "storageKeyType": "SharedAccessKey"
+  },
+  "resources": [
+    {
+      "name": "[variables('sqlserverName')]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "SqlServer"
+      },
+      "apiVersion": "2014-04-01",
+      "properties": {
+        "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+        "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
+        "version": "12.0"
+      },
+      "resources": [
+        {
+          "name": "[parameters('databaseName')]",
+          "type": "databases",
+          "location": "[resourceGroup().location]",
+          "tags": {
+            "displayName": "Database"
+          },
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "properties": {
+            "edition": "Basic",
+            "collation": "SQL_Latin1_General_CP1_CI_AS",
+            "maxSizeBytes": "1073741824",
+            "requestedServiceObjectiveName": "Basic"
+          },
+          "resources": [
+            {
+              "name": "Import",
+              "type": "extensions",
+              "apiVersion": "2014-04-01",
+              "dependsOn": [
+                "[concat('Microsoft.Sql/servers/', variables('sqlserverName'), '/databases/', parameters('databaseName'))]"
+              ],
+              "properties": {
+                "storageKeyType": "[variables('storageKeyType')]",
+                "storageKey": "[parameters('sasToken')]",
+                "storageUri": "[parameters('bacpacURL')]",
+                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
+                "operationMode": "Import"
+              }
+            }
+          ]
+        },
+        {
+          "type": "firewallRules",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "location": "[resourceGroup().location]",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "database": {
+      "type": "object",
+      "value": {
+        "sqlSvrFQDN": "[reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName]"
+      }
+    }
+  }
+}

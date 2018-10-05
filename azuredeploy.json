@@ -326,13 +326,23 @@
         },
         "parameters": {
           "prefix": {
-            "value": "be"
+            "value": "[parameters('initials')]"
           },
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          "sqlAdministratorLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbUserName"
+            }
           },
-          "staticIpAddress": {
-            "value": "[parameters('backendLoadBalanceIP')]"
+          "sqlAdministratorPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbPasword"
+            }
           }
         }
       }
@@ -474,6 +484,32 @@
           }
         }
       }
+    },
+    {
+      "name": "TemplateSqlDatabase",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deploySqlDatabase.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "fe"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          },
+          "staticIpAddress": {
+            "value": "[parameters('frontendLoadBalanceIP')]"
+          }
+        }
+      }
     }
   ],
   "outputs": {
@@ -488,6 +524,10 @@
     "virtualNetwork": {
       "type": "object",
       "value": "[reference('TemplateVNet').outputs.virtualNetwork.value]"
+    },
+    "sqlDatabase": {
+      "type": "object",
+      "value": "[reference('TemplateSqlDatabase').outputs.database.value]"
     }
   }
 }
