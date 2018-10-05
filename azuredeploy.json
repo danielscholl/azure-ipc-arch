@@ -507,6 +507,12 @@
               },
               "secretName": "dbPasword"
             }
+          },
+          "subnetFeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          },
+          "subnetBeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
           }
         }
       }

@@ -42,6 +42,18 @@
         "description": "Storage Access Token to retrieve file if required."
       },
       "defaultValue": "?"
+    },
+    "subnetFeId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID for Service EndPoint."
+      }
+    },
+    "subnetBeId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID for Service Endpoint."
+      }
     }
   },
   "variables": {
@@ -78,7 +90,21 @@
             "edition": "Basic",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
             "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "Basic"
+            "requestedServiceObjectiveName": "Basic",
+            "networkAcls": {
+              "bypass": "None",
+              "virtualNetworkRules": [
+                {
+                  "id": "[parameters('subnetFeId')]",
+                  "action": "Allow"
+                },
+                {
+                  "id": "[parameters('subnetBeId')]",
+                  "action": "Allow"
+                }
+              ],
+              "defaultAction": "Deny"
+            }
           },
           "resources": [
             {
