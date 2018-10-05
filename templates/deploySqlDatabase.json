@@ -8,15 +8,13 @@
         "description": "Small unique string."
       },
       "minLength": 2,
-      "maxLength": 9,
-      "defaultValue": "2tier"
+      "maxLength": 9
     },
     "sqlAdministratorLogin": {
       "type": "string",
       "metadata": {
         "description": "Admin user login name for SQL Server"
-      },
-      "defaultValue": "azureuser"
+      }
     },
     "sqlAdministratorPassword": {
       "type": "securestring",
@@ -29,14 +27,14 @@
       "metadata": {
         "description": "SQL Server Database Name."
       },
-      "defaultValue": "SimpleApp"
+      "defaultValue": "WideWorldImporters"
     },
     "bacpacURL": {
       "type": "string",
       "metadata": {
         "description": "URL Location of the Database backup (bacpac)."
       },
-      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/Simpleapp.bacpac"
+      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/WideWorldImporters.bacpac"
     },
     "sasToken": {
       "type": "string",
