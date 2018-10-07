@@ -52,8 +52,9 @@
     }
   },
   "variables": {
-    "NicName": "[concat(parameters('vmName'), '-nic')]",
-    "PublicIpName": "[concat(parameters('vmName'), '-ip')]",
+    "vmName": "[concat(resourceGroup().name, '-', parameters('vmName'))]",
+    "NicName": "[concat(variables('vmName'), '-nic')]",
+    "PublicIpName": "[concat(variables('vmName'), '-ip')]",
     "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
   },
   "resources": [
@@ -102,7 +103,7 @@
     {
       "comments": "## Virtual Machine ##",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[parameters('vmName')]",
+      "name": "[variables('vmName')]",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "tags": {
@@ -167,10 +168,10 @@
           "status": "Disabled",
           "timeInMinutes": 30
         },
-        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmname'))]"
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmname'))]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmname'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vmname'))]"
       ]
     }
   ],
