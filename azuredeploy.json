@@ -288,7 +288,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "TemplateKeyVault",
+        "TemplatePrivateKeyVault",
         "TemplateVNet"
       ],
       "properties": {
@@ -310,7 +310,7 @@
           "adminUserName": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "adminUserName"
             }
@@ -318,7 +318,7 @@
           "publicSSHKeyData": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "sshPublicKey"
             }
@@ -383,8 +383,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "TemplateStorage",
-        "TemplateKeyVault",
+        "TemplatePrivateStorage",
+        "TemplatePrivateKeyVault",
         "TemplateVNet"
       ],
       "properties": {
@@ -401,10 +401,10 @@
             "value": "[reference('TemplateLoadBalancerFE').outputs.loadBalancer.value.id]"
           },
           "storageAccount": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
           },
           "storageKey": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
           },
           "vmName": {
             "value": "[parameters('backendServerNamePrefix')]"
@@ -418,7 +418,7 @@
           "adminUserName": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "adminUserName"
             }
@@ -426,7 +426,7 @@
           "sshKeyData": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "sshPublicKey"
             }
@@ -439,8 +439,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "TemplateStorage",
-        "TemplateKeyVault",
+        "TemplatePrivateStorage",
+        "TemplatePrivateKeyVault",
         "TemplateVNet"
       ],
       "properties": {
@@ -457,10 +457,10 @@
             "value": "[reference('TemplateLoadBalancerBE').outputs.loadBalancer.value.id]"
           },
           "storageAccount": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
           },
           "storageKey": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.key]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
           },
           "vmName": {
             "value": "[parameters('frontendServerNamePrefix')]"
@@ -474,7 +474,7 @@
           "adminUserName": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "adminUserName"
             }
@@ -482,7 +482,7 @@
           "sshKeyData": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "sshPublicKey"
             }
@@ -510,7 +510,7 @@
           "sqlAdministratorLogin": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "dbUserName"
             }
@@ -518,7 +518,7 @@
           "sqlAdministratorPassword": {
             "reference": {
               "keyVault": {
-                "id": "[reference('TemplateKeyVault').outputs.keyVault.value.id]"
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
               "secretName": "dbPasword"
             }
@@ -539,11 +539,11 @@
   "outputs": {
     "storageAccount": {
       "type": "object",
-      "value": "[reference('TemplateStorage').outputs.storageAccount.value]"
+      "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value]"
     },
     "keyVault": {
       "type": "object",
-      "value": "[reference('TemplateKeyVault').outputs.keyVault.value]"
+      "value": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value]"
     },
     "virtualNetwork": {
       "type": "object",
