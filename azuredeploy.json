@@ -189,9 +189,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "unique": {
-            "value": "[parameters('initials')]"
-          },
           "vnetPrefix": {
             "value": "[parameters('vnetPrefix')]"
           },
