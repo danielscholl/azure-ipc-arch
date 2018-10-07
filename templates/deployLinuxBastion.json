@@ -13,7 +13,7 @@
       "metadata": {
         "description": "Virtual Machine 1 Server Name."
       },
-      "defaultValue": "bastion",
+      "defaultValue": "linux-bastion",
       "minLength": 1
     },
     "vmSize": {
