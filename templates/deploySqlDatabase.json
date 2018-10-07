@@ -63,7 +63,7 @@
     }
   },
   "variables": {
-    "sqlserverName": "[concat(parameters('prefix'), uniqueString(resourceGroup().id),'-server')]",
+    "sqlserverName": "[concat(resourceGroup().name, '-server-', uniqueString(resourceGroup().id))]",
     "storageKeyType": "SharedAccessKey"
   },
   "resources": [

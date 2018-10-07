@@ -174,9 +174,7 @@
       "minValue": 2
     }
   },
-  "variables": {
-    "bastionHostName": "bastion"
-  },
+  "variables": {},
   "resources": [
     {
       "name": "TemplateVNet",
@@ -294,9 +292,6 @@
         "parameters": {
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet4Id]"
-          },
-          "vmName": {
-            "value": "[variables('bastionHostName')]"
           },
           "vmSize": {
             "value": "[parameters('bastionSize')]"
