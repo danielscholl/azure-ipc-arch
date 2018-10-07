@@ -70,11 +70,8 @@
     {
       "name": "[variables('sqlserverName')]",
       "type": "Microsoft.Sql/servers",
+      "apiVersion": "2015-05-01-preview",
       "location": "[resourceGroup().location]",
-      "tags": {
-        "displayName": "SqlServer"
-      },
-      "apiVersion": "2014-04-01",
       "properties": {
         "administratorLogin": "[parameters('sqlAdministratorLogin')]",
         "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
@@ -84,11 +81,8 @@
         {
           "name": "[parameters('databaseName')]",
           "type": "databases",
+          "apiVersion": "2015-05-01-preview",
           "location": "[resourceGroup().location]",
-          "tags": {
-            "displayName": "Database"
-          },
-          "apiVersion": "2014-04-01",
           "dependsOn": [
             "[variables('sqlserverName')]"
           ],
@@ -102,7 +96,7 @@
             {
               "name": "Import",
               "type": "extensions",
-              "apiVersion": "2014-04-01",
+              "apiVersion": "2015-05-01-preview",
               "dependsOn": [
                 "[concat('Microsoft.Sql/servers/', variables('sqlserverName'), '/databases/', parameters('databaseName'))]"
               ],
@@ -120,11 +114,11 @@
         {
           "name": "AllowAllWindowsAzureIps",
           "type": "firewallRules",
-          "apiVersion": "2014-04-01",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[resourceGroup().location]",
           "dependsOn": [
             "[variables('sqlserverName')]"
           ],
-          "location": "[resourceGroup().location]",
           "properties": {
             "endIpAddress": "0.0.0.0",
             "startIpAddress": "0.0.0.0"
