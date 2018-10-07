@@ -69,7 +69,7 @@
       "comments": "## Network Security Group ##",
       "name": "[variables('nsg1Name')]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Network Security Group - Container Tier"
@@ -125,7 +125,7 @@
       "comments": "## Network Security Group ##",
       "name": "[variables('nsg2Name')]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Network Security Group - Backend Tier"
@@ -195,7 +195,7 @@
       "comments": "## Network Security Group ##",
       "name": "[variables('nsg3Name')]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Network Security Group - Frontend Tier"
@@ -251,7 +251,7 @@
       "comments": "## Network Security Group ##",
       "name": "[variables('nsg4Name')]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Network Security Group - Manage Tier"
@@ -279,7 +279,7 @@
       "comments": "## Virtual Network ##",
       "name": "[variables('VNetName')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2016-12-01",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsg1Name'))]",
