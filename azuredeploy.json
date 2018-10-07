@@ -217,7 +217,7 @@
       }
     },
     {
-      "name": "TemplateKeyVault",
+      "name": "TemplatePrivateKeyVault",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -226,7 +226,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployKeyVault.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployPrivateKeyVault.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -255,7 +255,7 @@
       }
     },
     {
-      "name": "TemplateStorage",
+      "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -264,7 +264,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployPrivateStorageAccount.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
