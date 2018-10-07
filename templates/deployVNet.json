@@ -313,6 +313,9 @@
                 },
                 {
                   "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.KeyVault"
                 }
               ],
               "networkSecurityGroup": {
@@ -330,6 +333,9 @@
                 },
                 {
                   "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.KeyVault"
                 }
               ],
               "networkSecurityGroup": {
@@ -347,6 +353,9 @@
                 },
                 {
                   "service": "Microsoft.Storage"
+                },
+                {
+                  "service": "Microsoft.KeyVault"
                 }
               ],
               "networkSecurityGroup": {

@@ -179,58 +179,6 @@
   },
   "resources": [
     {
-      "name": "TemplateStorage",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "storageAccountType": {
-            "value": "Standard_LRS"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateKeyVault",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployKeyVault.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "unique": {
-            "value": "[parameters('initials')]"
-          },
-          "servicePrincipalClientId": {
-            "value": "[parameters('servicePrincipalClientId')]"
-          },
-          "servicePrincipalClientKey": {
-            "value": "[parameters('servicePrincipalClientKey')]"
-          },
-          "adminUserName": {
-            "value": "[parameters('adminUserName')]"
-          },
-          "publicSSHKeyData": {
-            "value": "[parameters('adminSshKey')]"
-          },
-          "dbUserName": {
-            "value": "[parameters('dbUserName')]"
-          },
-          "dbPassword": {
-            "value": "[parameters('dbPasword')]"
-          }
-        }
-      }
-    },
-    {
       "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -264,6 +212,73 @@
           },
           "remoteAccessACL": {
             "value": "[parameters('remoteAccessACL')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateKeyVault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployKeyVault.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "unique": {
+            "value": "[parameters('initials')]"
+          },
+          "servicePrincipalClientId": {
+            "value": "[parameters('servicePrincipalClientId')]"
+          },
+          "servicePrincipalClientKey": {
+            "value": "[parameters('servicePrincipalClientKey')]"
+          },
+          "adminUserName": {
+            "value": "[parameters('adminUserName')]"
+          },
+          "publicSSHKeyData": {
+            "value": "[parameters('adminSshKey')]"
+          },
+          "dbUserName": {
+            "value": "[parameters('dbUserName')]"
+          },
+          "dbPassword": {
+            "value": "[parameters('dbPasword')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
+          },
+          "subnetAksId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Id]"
+          },
+          "subnetBeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "subnetFeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
           }
         }
       }
@@ -508,11 +523,14 @@
               "secretName": "dbPasword"
             }
           },
-          "subnetFeId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          "subnetAksId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
           },
           "subnetBeId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "subnetFeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
           }
         }
       }

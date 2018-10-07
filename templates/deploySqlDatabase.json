@@ -54,6 +54,12 @@
       "metadata": {
         "description": "Subnet ID for Service Endpoint."
       }
+    },
+    "subnetAksId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID for Service Endpoint."
+      }
     }
   },
   "variables": {
@@ -72,7 +78,29 @@
       "properties": {
         "administratorLogin": "[parameters('sqlAdministratorLogin')]",
         "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
-        "version": "12.0"
+        "version": "12.0",
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [
+            {
+              "id": "[parameters('subnetFeId')]",
+              "action": "Allow",
+              "state": "Succeeded"
+            },
+            {
+              "id": "[parameters('subnetBeId')]",
+              "action": "Allow",
+              "state": "Succeeded"
+            },
+            {
+              "id": "[parameters('subnetAksId')]",
+              "action": "Allow",
+              "state": "Succeeded"
+            }
+          ],
+          "ipRules": [],
+          "defaultAction": "Deny"
+        }
       },
       "resources": [
         {

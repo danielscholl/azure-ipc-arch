@@ -122,9 +122,9 @@ CreateSSHKeys $AZURE_USER
 
 tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
 az group deployment create --template-file azuredeploy.json  \
-    --resource-group $RESOURCE_GROUP \
-    --parameters azuredeploy.parameters.json \
-    --parameters servicePrincipalClientId=$CLIENT_ID --parameters servicePrincipalClientKey=$CLIENT_SECRET \
-    --parameters initials=$INITIALS \
-    --parameters adminUserName=$LINUX_USER \
-    --parameters dbUserName=$LINUX_USER
+  --resource-group $RESOURCE_GROUP \
+  --parameters azuredeploy.parameters.json \
+  --parameters servicePrincipalClientId=$CLIENT_ID --parameters servicePrincipalClientKey=$CLIENT_SECRET \
+  --parameters initials=$INITIALS \
+  --parameters adminUserName=$LINUX_USER \
+  --parameters dbUserName=$LINUX_USER
