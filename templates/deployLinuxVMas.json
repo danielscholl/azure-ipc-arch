@@ -183,7 +183,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(resourceGroup().name, parameters('vmName'), '-vm', copyIndex(), '/LinuxDiagnostic')]",
+      "name": "[concat(resourceGroup().name, '-', parameters('vmName'), '-vm', copyIndex(), '/LinuxDiagnostic')]",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "copy": {
