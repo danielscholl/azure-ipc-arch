@@ -492,7 +492,7 @@
         "TemplateVNet"
       ],
       "properties": {
-        "mode": "Complete",
+        "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('templateURL'), 'deploySqlDatabase.json')]",
           "contentVersion": "1.0.0.0"

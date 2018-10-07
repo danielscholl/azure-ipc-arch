@@ -79,14 +79,14 @@
     }
   },
   "variables": {
-    "AvailabilitySetName": "[concat(parameters('vmName'), '-as')]",
+    "availabilitySetName": "[concat(resourceGroup().name, '-as', parameters('vmName'))]",
     "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
   },
   "resources": [
     {
       "comments": "## Availability Set ##",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('AvailabilitySetName')]",
+      "name": "[variables('availabilitySetName')]",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "properties": {
@@ -98,7 +98,7 @@
     {
       "comments": "## Network Interface ##",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(parameters('vmName'), '-vm', copyindex(), '-nic')]",
+      "name": "[concat(resourceGroup().name, parameters('vmName'), '-vm', copyindex(), '-nic')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "tags": {},
@@ -128,7 +128,7 @@
     {
       "comments": "## Virtual Machine ##",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('vmName'), '-vm', copyIndex())]",
+      "name": "[concat(resourceGroup().name, parameters('vmName'), '-vm', copyIndex())]",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -174,7 +174,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('vmName'), '-vm', copyindex(), '-nic'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(resourceGroup().name, parameters('vmName'), '-vm', copyindex(), '-nic'))]"
             }
           ]
         }
@@ -183,7 +183,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmName'), '-vm', copyIndex(), '/LinuxDiagnostic')]",
+      "name": "[concat(resourceGroup().name, parameters('vmName'), '-vm', copyIndex(), '/LinuxDiagnostic')]",
       "apiVersion": "2016-04-30-preview",
       "location": "[resourceGroup().location]",
       "copy": {
