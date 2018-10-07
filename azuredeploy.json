@@ -373,7 +373,7 @@
       }
     },
     {
-      "name": "TemplateVMasBE",
+      "name": "TemplateLinuxVMasBE",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -384,7 +384,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployVMas.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -429,7 +429,7 @@
       }
     },
     {
-      "name": "TemplateVMasFE",
+      "name": "TemplateLinuxVMasFE",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -440,7 +440,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployVMas.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -492,7 +492,7 @@
         "TemplateVNet"
       ],
       "properties": {
-        "mode": "Incremental",
+        "mode": "Complete",
         "templateLink": {
           "uri": "[concat(parameters('templateURL'), 'deploySqlDatabase.json')]",
           "contentVersion": "1.0.0.0"
