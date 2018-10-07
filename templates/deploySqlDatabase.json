@@ -78,29 +78,7 @@
       "properties": {
         "administratorLogin": "[parameters('sqlAdministratorLogin')]",
         "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
-        "version": "12.0",
-        "networkAcls": {
-          "bypass": "AzureServices",
-          "virtualNetworkRules": [
-            {
-              "id": "[parameters('subnetFeId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            },
-            {
-              "id": "[parameters('subnetBeId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            },
-            {
-              "id": "[parameters('subnetAksId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            }
-          ],
-          "ipRules": [],
-          "defaultAction": "Deny"
-        }
+        "version": "12.0"
       },
       "resources": [
         {
@@ -140,16 +118,49 @@
           ]
         },
         {
+          "name": "AllowAllWindowsAzureIps",
           "type": "firewallRules",
           "apiVersion": "2014-04-01",
           "dependsOn": [
             "[variables('sqlserverName')]"
           ],
           "location": "[resourceGroup().location]",
-          "name": "AllowAllWindowsAzureIps",
           "properties": {
             "endIpAddress": "0.0.0.0",
             "startIpAddress": "0.0.0.0"
+          }
+        },
+        {
+          "name": "SubnetFe",
+          "type": "virtualNetworkRules",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "properties": {
+            "virtualNetworkSubnetId": "[parameters('subnetFeId')]"
+          }
+        },
+        {
+          "name": "SubnetBe",
+          "type": "virtualNetworkRules",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "properties": {
+            "virtualNetworkSubnetId": "[parameters('subnetBeId')]"
+          }
+        },
+        {
+          "name": "SubnetAks",
+          "type": "virtualNetworkRules",
+          "apiVersion": "2014-04-01",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "properties": {
+            "virtualNetworkSubnetId": "[parameters('subnetAksId')]"
           }
         }
       ]
