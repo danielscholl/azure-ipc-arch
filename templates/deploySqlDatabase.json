@@ -63,7 +63,8 @@
     }
   },
   "variables": {
-    "sqlserverName": "[concat(resourceGroup().name, '-server-', uniqueString(resourceGroup().id))]",
+    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
+    "sqlserverName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
     "storageKeyType": "SharedAccessKey"
   },
   "resources": [
