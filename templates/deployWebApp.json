@@ -15,8 +15,8 @@
       "location": "[resourceGroup().location]",
       "kind": "app",
       "sku": {
-        "tier": "Basic",
-        "name": "B1",
+        "tier": "Standard",
+        "name": "S1",
         "capacity": 1
       },
       

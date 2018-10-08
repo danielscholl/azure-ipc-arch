@@ -540,11 +540,31 @@
       }
     },
     {
-      "name": "TemplateWebApp",
+      "name": "TemplateVpnGateway",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployVpnGateway.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet5Id]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateWebApp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVpnGateway"
       ],
       "properties": {
         "mode": "Incremental",
