@@ -36,7 +36,7 @@
       "comments": "## Web Site ##",
       "name": "[variables('siteName')]",
       "type": "Microsoft.Web/sites",      
-      "apiVersion": "2016-08-01",
+      "apiVersion": "2018-02-01",
       "location": "[resourceGroup().location]",
       "kind": "app",
       "dependsOn": [
@@ -48,7 +48,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2016-09-01",
+          "apiVersion": "2018-02-01",
           "name": "[parameters('vnetName')]",
           "type": "virtualNetworkConnections",
           "location": "[resourceGroup().location]",
