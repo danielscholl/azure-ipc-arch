@@ -597,10 +597,10 @@
             "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
           },
           "storageAccountName": {
-            "value": "[reference('TemplatePrivateStorageAccount').outputs.storageAccount.value.name]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
           },
           "storageAccountId": {
-            "value": "[reference('TemplatePrivateStorageAccount').outputs.storageAccount.value.id]"
+            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.id]"
           }
         }
       }
@@ -626,6 +626,10 @@
     "webApp": {
       "type": "object",
       "value": "[reference('TemplateWebApp').outputs.web.value]"
+    },
+    "funcApp": {
+      "type": "object",
+      "value": "[reference('TemplateFuncApp').outputs.web.value]"
     }
   }
 }
