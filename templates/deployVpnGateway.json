@@ -54,7 +54,27 @@
         },
         "gatewayType": "Vpn",
         "vpnType": "RouteBased",
-        "enableBgp": false
+        "enableBgp": false,
+        "vpnClientConfiguration": {
+          "vpnClientAddressPool": {
+              "addressPrefixes": [
+                  "192.168.1.0/24"
+              ]
+          },
+          "vpnClientProtocols": [
+              "SSTP"
+          ],
+          "vpnClientRootCertificates": [
+              {
+                  "name": "AppServiceCertificate.cer",
+                  "properties": {
+                      "publicCertData": "MIIDODCCAiSgAwIBAgIQZ1gJCo8y9phJOCntb0AnzDAJBgUrDgMCHQUAMCsxKTAnBgNVBAMTIFdlYnNpdGVzQ2VydGlmaWNhdGVpcGMtYXJjaC12bmV0MB4XDTE4MTAwODE5MzEzMFoXDTM5MTIzMTIzNTk1OVowKzEpMCcGA1UEAxMgV2Vic2l0ZXNDZXJ0aWZpY2F0ZWlwYy1hcmNoLXZuZXQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQD846dsW2nuE/nSaN+tFwMMIXaN/Y+7pjm4CVRI3W5Qap+OXI8xaktA/WuROXm7Be3YTcwTMKPr7tfWgQq/RyiTmH4cnX97HoMUg9EnkmoYNBG8uKqki5xN47UT3106GZ3IaqzNuwPEuuhIhX23+G0DtxYrVRDZiAAIx2K4RG361oxUCCpBmDIQcxC4Ao72VIe+7JkgbDOISgYwzZ9mcJAo/BKKO1FYXFv7PNiJ1IV4YSzBP++/uQfSuCGVafHINfQcCCLZp+hfAsVtqZGqTYMvkSj4vYkkh9fVbB3cCA/h9v7mpdbZPgu4sZws4PTtysKadU/AJeDxOSVX/c7+JQI5AgMBAAGjYDBeMFwGA1UdAQRVMFOAEIWvrPzfNhjXVN6dpAM/+IahLTArMSkwJwYDVQQDEyBXZWJzaXRlc0NlcnRpZmljYXRlaXBjLWFyY2gtdm5ldIIQZ1gJCo8y9phJOCntb0AnzDAJBgUrDgMCHQUAA4IBAQA0QGYJTvc+DjrzgOUew/NpzDkpjACznINGgg+kq8G/hRbC0bceG3/npSuhHgy+VoLE9h+xso3p0BAMXDF5x00RTS9/8GgAjUULKwbRZzm0vsZU4Fc0vgaIhbPmNpPgg/tEvkqcO/Tq8nMMjmJODNIQYri8DE6vJT/nEWnVWouBjsPpU1RzjY5oyKnPeAWAs7opdDqr9TTBQ0SsvY3mxj3P1vI0tdnLckXBCEHaV/I2dGLCh07PXrlP+228kjrE48XSbjikVZYGCkrf404jITmNLkUxl0F1qqXOutS37pRHfZ0EvpdAHCdW5AGqXW9fcrsyMHPW+FiFiNyKd146fxNp"
+                  }
+              }
+          ],
+          "vpnClientRevokedCertificates": [],
+          "vpnClientIpsecPolicies": []
+      }
       }
     }
   ]

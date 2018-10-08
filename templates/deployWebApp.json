@@ -1,7 +1,15 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
+  "parameters": {
+    "vnetName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of an existing Azure VNet which has a Gateway Subnet already, and is in the resource group you are going to deploy."
+      }
+    }
+  },
   "variables": {
     "hostingPlanName": "[concat(resourceGroup().name, '-plan')]",
     "siteName": "[concat(variables('hostingPlanName'), '-web')]"
@@ -37,7 +45,22 @@
       "properties": {
         "name": "[variables('siteName')]",
         "serverFarmId": "[variables('hostingPlanName')]"
-      }
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-09-01",
+          "name": "[parameters('vnetName')]",
+          "type": "virtualNetworkConnections",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('siteName'))]"
+          ],
+          "properties": {
+            "vnetResourceId": "[concat(resourceGroup().id, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
+          }
+        }
+
+      ]
     }
   ],
   "outputs": {
