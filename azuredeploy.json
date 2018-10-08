@@ -538,6 +538,24 @@
           }
         }
       }
+    },
+    {
+      "name": "TemplateWebApp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployWebApp.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+
+        }
+      }
     }
   ],
   "outputs": {
@@ -556,6 +574,10 @@
     "sqlDatabase": {
       "type": "object",
       "value": "[reference('TemplateSqlDatabase').outputs.database.value]"
+    },
+    "webApp": {
+      "type": "object",
+      "value": "[reference('TemplateWebApp').outputs.web.value]"
     }
   }
 }
