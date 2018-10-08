@@ -28,15 +28,16 @@
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2016-09-01",
       "location": "[resourceGroup().location]",
+      "sku": {
+        "Tier": "Basic",
+        "Name": "B1"
+      },
+      "kind": "app",
       "properties": {
         "name": "[variables('hostingPlanName')]",
         "workerSizeId": "1",
         "reserved": true,
         "numberOfWorkers": "1"
-      },
-      "sku": {
-        "Tier": "Basic",
-        "Name": "B1"
       }
     }
   ],
