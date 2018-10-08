@@ -52,7 +52,7 @@
       "comments": "## Key Vault ##",
       "type": "Microsoft.KeyVault/vaults",
       "name": "[variables('KeyVaultName')]",
-      "apiVersion": "2015-06-01",
+      "apiVersion": "2018-02-14",
       "location": "[resourceGroup().location]",
       "properties": {
         "sku": {
@@ -82,7 +82,7 @@
         {
           "type": "secrets",
           "name": "adminUserName",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('adminUserName')]"
           },
@@ -93,7 +93,7 @@
         {
           "type": "secrets",
           "name": "sshPublicKey",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('publicSSHKeyData')]"
           },
@@ -104,7 +104,7 @@
         {
           "type": "secrets",
           "name": "clientId",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('servicePrincipalClientId')]"
           },
@@ -115,7 +115,7 @@
         {
           "type": "secrets",
           "name": "clientSecret",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('servicePrincipalClientKey')]"
           },
@@ -126,7 +126,7 @@
         {
           "type": "secrets",
           "name": "dbUserName",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('dbUserName')]"
           },
@@ -137,7 +137,7 @@
         {
           "type": "secrets",
           "name": "dbPasword",
-          "apiVersion": "2015-06-01",
+          "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('dbPassword')]"
           },
