@@ -8,36 +8,35 @@
   },
   "resources": [
     {
-      "comments": "## Web Site ##",
-      "type": "Microsoft.Web/sites",
-      "name": "[variables('siteName')]",
-      "dependsOn": [
-        "[variables('hostingPlanName')]"
-      ],
-      "properties": {
-        "name": "[variables('siteName')]",
-        "serverFarmId": "[variables('hostingPlanName')]",
-        "hostingEnvironment": ""
-      },
-      "apiVersion": "2016-08-01",
-      "location": "[resourceGroup().location]"
-    },
-    {
       "comments": "## Hosting Plan ##",
       "name": "[variables('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2016-09-01",
       "location": "[resourceGroup().location]",
-      "sku": {
-        "Tier": "Basic",
-        "Name": "B1"
-      },
       "kind": "app",
+      "sku": {
+        "tier": "Basic",
+        "name": "B1",
+        "capacity": 1
+      },
+      
       "properties": {
-        "name": "[variables('hostingPlanName')]",
-        "workerSizeId": "1",
-        "reserved": true,
-        "numberOfWorkers": "1"
+        "name": "[variables('hostingPlanName')]"
+      }
+    },
+    {
+      "comments": "## Web Site ##",
+      "name": "[variables('siteName')]",
+      "type": "Microsoft.Web/sites",      
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "kind": "app",
+      "dependsOn": [
+        "[variables('hostingPlanName')]"
+      ],
+      "properties": {
+        "name": "[variables('siteName')]",
+        "serverFarmId": "[variables('hostingPlanName')]"
       }
     }
   ],
