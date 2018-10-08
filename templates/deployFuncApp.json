@@ -1,0 +1,117 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of an existing Azure VNet which has a Gateway Subnet already, and is in the resource group you are going to deploy."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of an existing Azure Storage Account, and is in the resource group you are going to deploy."
+      }
+    },
+    "storageAccountId": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Id of an existing Azure Storage Account, and is in the resource group you are going to deploy."
+      }
+    }
+  },
+  "variables": {
+    "hostingPlanName": "[concat(resourceGroup().name, '-plan')]",
+    "siteName": "[concat(variables('hostingPlanName'), '-functions')]"
+  },
+  "resources": [
+    {
+      "comments": "## Hosting Plan ##",
+      "name": "[variables('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2016-09-01",
+      "location": "[resourceGroup().location]",
+      "kind": "app",
+      "sku": {
+        "tier": "Standard",
+        "name": "S1",
+        "capacity": 1
+      },
+      "properties": {
+        "name": "[variables('hostingPlanName')]"
+      }
+    },
+    {
+      "comments": "## Function Web Site ##",
+      "name": "[variables('siteName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp",
+      "apiVersion": "2018-02-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
+      ],
+      "properties": {
+        "name": "[variables('siteName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "hostingEnvironment": "",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          "cors": {
+            "allowedOrigins": [
+              "*"
+            ]
+          },
+          "appSettings": [
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~1"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1,';')]"
+            },
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1,';')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'), ';AccountKey=',listKeys(parameters('storageAccountId'), '2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('siteName'))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2018-02-01",
+          "name": "[parameters('vnetName')]",
+          "type": "virtualNetworkConnections",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('siteName'))]"
+          ],
+          "properties": {
+            "vnetResourceId": "[concat(resourceGroup().id, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "web": {
+      "type": "object",
+      "value": {
+        "uri": "[reference(concat('Microsoft.Web/sites/', variables('siteName'))).hostnames[0]]"
+      }
+    }
+  }
+}

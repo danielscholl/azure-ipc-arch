@@ -578,6 +578,32 @@
           }
         }
       }
+    },
+    {
+      "name": "TemplateFuncApp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVpnGateway"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployFuncApp.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          },
+          "storageAccountName": {
+            "value": "[reference('TemplatePrivateStorageAccount').outputs.storageAccount.value.name]"
+          },
+          "storageAccountId": {
+            "value": "[reference('TemplatePrivateStorageAccount').outputs.storageAccount.value.id]"
+          }
+        }
+      }
     }
   ],
   "outputs": {

@@ -59,7 +59,6 @@
             "vnetResourceId": "[concat(resourceGroup().id, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
           }
         }
-
       ]
     }
   ],
