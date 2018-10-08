@@ -387,10 +387,15 @@
     "subnets": {
       "type": "object",
       "value": {
+        "subnet1Name": "[variables('Subnet1Name')]",
         "subnet1Id": "[variables('subnet1Id')]",
+        "subnet2Name": "[variables('Subnet2Name')]",
         "subnet2Id": "[variables('subnet2Id')]",
+        "subnet3Name": "[variables('Subnet3Name')]",
         "subnet3Id": "[variables('subnet3Id')]",
+        "subnet4Name": "[variables('Subnet4Name')]",
         "subnet4Id": "[variables('subnet4Id')]",
+        "subnet5Name": "[variables('Subnet5Name')]",
         "subnet5Id": "[variables('subnet5Id')]"
       }
     }

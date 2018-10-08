@@ -14,19 +14,25 @@
         "Premium_LRS"
       ]
     },
-    "subnetFeId": {
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network to restrict Storage Account Access to"
+      }
+    },
+    "subnetFe": {
       "type": "string",
       "metadata": {
         "description": "Subnet to restrict Storage Account Access to"
       }
     },
-    "subnetBeId": {
+    "subnetBe": {
       "type": "string",
       "metadata": {
         "description": "Subnet to restrict Storage Account Access to"
       }
     },
-    "subnetAksId": {
+    "subnetAks": {
       "type": "string",
       "metadata": {
         "description": "Subnet to restrict Storage Account Access to"
@@ -65,21 +71,21 @@
         "networkAcls": {
           "bypass": "AzureServices",
           "virtualNetworkRules": [
-            {
-              "id": "[parameters('subnetFeId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            },
-            {
-              "id": "[parameters('subnetBeId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            },
-            {
-              "id": "[parameters('subnetAksId')]",
-              "action": "Allow",
-              "state": "Succeeded"
-            }
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetFe'))]",
+                  "action": "Allow",
+                  "state": "Succeeded"
+              },
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetBe'))]",
+                  "action": "Allow",
+                  "state": "Succeeded"
+              },
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAks'))]",
+                  "action": "Allow",
+                  "state": "Succeeded"
+              }
           ],
           "ipRules": [],
           "defaultAction": "Deny"
