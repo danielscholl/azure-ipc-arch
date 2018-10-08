@@ -54,7 +54,7 @@
   "variables": {
     "vmName": "[concat(resourceGroup().name, '-', parameters('vmName'))]",
     "NicName": "[concat(variables('vmName'), '-nic')]",
-    "PublicIpName": "[concat(parameters('vmName'), '-ip')]",
+    "PublicIpName": "[concat(variables('vmName'), '-ip')]",
     "sshKeyPath": "[concat('/home/',parameters('adminUserName'),'/.ssh/authorized_keys')]"
   },
   "resources": [
