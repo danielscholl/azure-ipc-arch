@@ -74,17 +74,17 @@
               {
                   "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetFe'))]",
                   "action": "Allow",
-                  "state": "Succeeded"
+                  "state": "succeeded"
               },
               {
                   "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetBe'))]",
                   "action": "Allow",
-                  "state": "Succeeded"
+                  "state": "succeeded"
               },
               {
                   "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAks'))]",
                   "action": "Allow",
-                  "state": "Succeeded"
+                  "state": "succeeded"
               }
           ],
           "ipRules": [],
@@ -99,7 +99,7 @@
       "value": {
         "id": "[variables('storageId')]",
         "name": "[variables('storageAccountName')]",
-        "key": "[listKeys(variables('storageId'), '2018-02-14').keys[0].value]"
+        "key": "[listKeys(variables('storageId'), '2016-01-01').keys[0].value]"
       }
     }
   }

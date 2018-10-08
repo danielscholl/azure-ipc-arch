@@ -41,6 +41,30 @@
         "description": "Database Server Admin Password."
       },
       "minLength": 10
+    },
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network to restrict Storage Account Access to"
+      }
+    },
+    "subnetFe": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet to restrict Storage Account Access to"
+      }
+    },
+    "subnetBe": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet to restrict Storage Account Access to"
+      }
+    },
+    "subnetAks": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet to restrict Storage Account Access to"
+      }
     }
   },
   "variables": {
@@ -74,6 +98,28 @@
             }
           }
         ],
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetFe'))]",
+                  "action": "Allow",
+                  "state": "succeeded"
+              },
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetBe'))]",
+                  "action": "Allow",
+                  "state": "succeeded"
+              },
+              {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAks'))]",
+                  "action": "Allow",
+                  "state": "succeeded"
+              }
+          ],
+          "ipRules": [],
+          "defaultAction": "Deny"
+        },
         "enabledForDeployment": true,
         "enabledForTemplateDeployment": true,
         "enabledForVolumeEncryption": true
