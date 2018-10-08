@@ -259,6 +259,23 @@
       }
     },
     {
+      "name": "TemplateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
+          }
+        }
+      }
+    },
+    {
       "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -584,6 +601,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
+        "TemplatePrivateStorage",
         "TemplateVpnGateway"
       ],
       "properties": {
@@ -597,10 +615,10 @@
             "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
           },
           "storageAccountName": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
           },
           "storageAccountId": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.id]"
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.id]"
           }
         }
       }
