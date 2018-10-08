@@ -11,7 +11,7 @@
     }
   },
   "variables": {
-    "hostingPlanName": "[concat(resourceGroup().name, '-plan')]",
+    "hostingPlanName": "[concat(resourceGroup().name, '-appplan')]",
     "siteName": "[concat(variables('hostingPlanName'), '-web')]"
   },
   "resources": [
