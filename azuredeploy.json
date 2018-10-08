@@ -242,6 +242,18 @@
           },
           "dbPassword": {
             "value": "[parameters('dbPasword')]"
+          },
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          },
+          "subnetAks": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
+          },
+          "subnetBe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
+          },
+          "subnetFe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
           }
         }
       }
@@ -263,14 +275,17 @@
           "storageAccountType": {
             "value": "Standard_LRS"
           },
-          "subnetAksId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Id]"
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
           },
-          "subnetBeId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          "subnetAks": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
           },
-          "subnetFeId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          "subnetBe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
+          },
+          "subnetFe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
           }
         }
       }
