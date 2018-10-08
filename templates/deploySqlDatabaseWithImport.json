@@ -27,7 +27,21 @@
       "metadata": {
         "description": "SQL Server Database Name."
       },
-      "defaultValue": "SampleDB"
+      "defaultValue": "SimpleApp"
+    },
+    "bacpacURL": {
+      "type": "string",
+      "metadata": {
+        "description": "URL Location of the Database backup (bacpac)."
+      },
+      "defaultValue": "https://cloudcodeit.blob.core.windows.net/public/Simpleapp.bacpac"
+    },
+    "sasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Access Token to retrieve file if required."
+      },
+      "defaultValue": "?"
     },
     "subnetFeId": {
       "type": "string",
@@ -50,7 +64,8 @@
   },
   "variables": {
     "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "sqlserverName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]"
+    "sqlserverName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+    "storageKeyType": "SharedAccessKey"
   },
   "resources": [
     {
@@ -78,7 +93,24 @@
             "maxSizeBytes": "1073741824",
             "requestedServiceObjectiveName": "Basic"
           },
-          "resources": [ ]
+          "resources": [
+            {
+              "name": "Import",
+              "type": "extensions",
+              "apiVersion": "2014-04-01",
+              "dependsOn": [
+                "[concat('Microsoft.Sql/servers/', variables('sqlserverName'), '/databases/', parameters('databaseName'))]"
+              ],
+              "properties": {
+                "storageKeyType": "[variables('storageKeyType')]",
+                "storageKey": "[parameters('sasToken')]",
+                "storageUri": "[parameters('bacpacURL')]",
+                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('sqlAdministratorPassword')]",
+                "operationMode": "Import"
+              }
+            }
+          ]
         },
         {
           "name": "AllowAllWindowsAzureIps",
