@@ -44,12 +44,6 @@
         "description": "Remote Access CIDR"
       },
       "defaultValue": "Internet"
-    },
-    "servicePrincipalClientId": {
-      "metadata": {
-        "description": "Client ID (used by cloudprovider)"
-      },
-      "type": "securestring"
     }
   },
   "variables": {
@@ -68,8 +62,7 @@
     "Nsg1Name": "[concat(variables('VNetName'), '-', variables('Subnet1Name'), '-nsg')]",
     "Nsg2Name": "[concat(variables('VNetName'), '-', variables('Subnet2Name'), '-nsg')]",
     "Nsg3Name": "[concat(variables('VNetName'), '-', variables('Subnet3Name'), '-nsg')]",
-    "Nsg4Name": "[concat(variables('VNetName'), '-', variables('Subnet4Name'), '-nsg')]",
-    "networkContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]"
+    "Nsg4Name": "[concat(variables('VNetName'), '-', variables('Subnet4Name'), '-nsg')]"
   },
   "resources": [
     {
@@ -381,19 +374,7 @@
           }
         ]
       }
-    },
-    {
-      "type": "Microsoft.Network/virtualNetworks/providers/roleAssignments",
-      "apiVersion": "2017-05-01",
-      "name": "[concat(variables('vnetName'), '/Microsoft.Authorization/', guid(concat(resourceGroup().id), variables('networkContributorRole')))]",
-      "dependsOn": [
-          "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[variables('networkContributorRole')]",
-        "principalId": "[parameters('servicePrincipalClientId')]"
-      }
-  }
+    }
   ],
   "outputs": {
     "virtualNetwork": {
