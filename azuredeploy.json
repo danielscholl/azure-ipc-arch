@@ -646,6 +646,10 @@
       "name": "TemplateAKS",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet",
+        "TemplatePrivateKeyVault"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
