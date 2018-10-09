@@ -50,12 +50,12 @@
     },
     "kubernetesVersion": {
       "type": "string",
-      "defaultValue": "1.9.6",
+      "defaultValue": "1.11.3",
       "allowedValues": [
-        "1.7.7",
-        "1.8.1",
-        "1.9.1",
-        "1.9.6"
+        "1.10.8",
+        "1.9.10",
+        "1.8.15",
+        "1.7.16"
       ],
       "metadata": {
         "description": "The version of Kubernetes."
@@ -96,7 +96,7 @@
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
-      "name": "ace492e6-ebf6-48fa-8dd4-ea762489cbf3",
+      "name": "[guid(resourceGroup().id, 'containerRegistry')]",
       "apiVersion": "2017-10-01-preview",
       "dependsOn": [
         "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
@@ -104,7 +104,7 @@
       "properties": {
         "roleDefinitionId": "[variables('contributorRole')]",
         "principalId": "[parameters('servicePrincipalClientId')]",
-        "scope": "[variables('registryId')]"
+        "scope": "[resourceGroup().Id]"
       }
     },
     {
