@@ -1,27 +1,27 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "servicePrincipalClientId": {
-        "metadata": {
-          "description": "Client ID (used by cloudprovider)"
-        },
-        "type": "securestring"
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "servicePrincipalClientId": {
+      "metadata": {
+        "description": "Client ID (used by cloudprovider)"
+      },
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "networkContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[concat(guid(concat(resourceGroup().id), 'virtualNetwork'))]",
+      "properties": {
+        "roleDefinitionId": "[variables('networkContributorRole')]",
+        "principalId": "[parameters('servicePrincipalClientId')]"
       }
-    },
-    "variables": {
-      "networkContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]"
-    },
-    "resources": [
-      {
-        "type": "Microsoft.Network/virtualNetworks/providers/roleAssignments",
-        "apiVersion": "2017-05-01",
-        "name": "[concat(guid(concat(resourceGroup().id), 'virtualNetwork'))]",
-        "properties": {
-          "roleDefinitionId": "[variables('networkContributorRole')]",
-          "principalId": "[parameters('servicePrincipalClientId')]"
-        }
-      }
-    ],
-    "outputs": {}
+    }
+  ],
+  "outputs": {}
 }
