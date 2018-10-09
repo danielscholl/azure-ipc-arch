@@ -26,7 +26,7 @@
       },
       "type": "securestring"
     },
-    "servicePrincipalClientKey": {
+    "servicePrincipalClientSecret": {
       "metadata": {
         "description": "The Service Principal Client Secret."
       },
@@ -92,6 +92,54 @@
       "properties": {
         "adminUserEnabled": false
       }
+    },
+    {
+      "comments": "## Managed Kubernetes ##",
+      "name": "[variables('clusterName')]",
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2018-03-31",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+      ],
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "enableRBAC": false,
+        "dnsPrefix": "[variables('clusterName')]",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "osDiskSizeGB": 30,
+            "count": "[parameters('agentCount')]",
+            "vmSize": "[parameters('agentVMSize')]",
+            "osType": "Linux",
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[parameters('subnetId')]"
+          }
+        ],
+        "linuxProfile": {
+          "adminUsername": "[variables('linuxProfile').adminUsername]",
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "[variables('linuxProfile').sshRsaPublicKey]"
+              }
+            ]
+          }
+        },
+        "servicePrincipalProfile": {
+          "clientId": "[parameters('servicePrincipalClientId')]",
+          "secret": "[parameters('servicePrincipalClientSecret')]"
+        },
+        "networkConfiguration": {
+          "networkProfile": {
+            "networkPlugin": "[variables('NetworkPlugin')]",
+            "serviceCidr": "[variables('ServiceCidr')]",
+            "dnsServiceIp": "[variables('DnsServiceIp')]",
+            "dockerBridgeCidr": "[variables('DockerBridgeCidr')]"
+          }
+        }
+      }
     }
   ],
   "outputs": {
@@ -100,6 +148,12 @@
       "value": {
         "id": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),'2016-06-27-preview').loginServer]",
         "name": "[variables('registryName')]"
+      }
+    },
+    "controlPlane": {
+      "type": "object",
+      "value": {
+        "fqdn": "[reference(variables('clusterName')).fqdn]"
       }
     }
   }
