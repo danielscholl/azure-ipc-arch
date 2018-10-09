@@ -26,7 +26,7 @@
       },
       "type": "securestring"
     },
-    "servicePrincipalClientSecret": {
+    "servicePrincipalClientKey": {
       "metadata": {
         "description": "The Service Principal Client Secret."
       },
@@ -143,7 +143,7 @@
         },
         "servicePrincipalProfile": {
           "clientId": "[parameters('servicePrincipalClientId')]",
-          "secret": "[parameters('servicePrincipalClientSecret')]"
+          "secret": "[parameters('servicePrincipalClientKey')]"
         },
         "networkConfiguration": {
           "networkProfile": {
