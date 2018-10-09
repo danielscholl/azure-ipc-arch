@@ -6,7 +6,7 @@
       "metadata": {
         "description": "Client ID (used by cloudprovider)"
       },
-      "type": "securestring"
+      "type": "string"
     }
   },
   "variables": {
