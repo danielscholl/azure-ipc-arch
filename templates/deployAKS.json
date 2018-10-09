@@ -150,10 +150,10 @@
         },
         "networkConfiguration": {
           "networkProfile": {
-            "networkPlugin": "[variables('NetworkPlugin')]",
-            "serviceCidr": "[variables('ServiceCidr')]",
-            "dnsServiceIp": "[variables('DnsServiceIp')]",
-            "dockerBridgeCidr": "[variables('DockerBridgeCidr')]"
+            "networkPlugin": "azure",
+            "serviceCidr": "10.99.0.0/16",
+            "dnsServiceIp": "10.99.0.10",
+            "dockerBridgeCidr": "172.17.0.1/16"
           }
         }
       }
