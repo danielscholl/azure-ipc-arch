@@ -18,7 +18,7 @@
     },
     "variables": {
       "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-      "workspaceName": "[concat(variables('cleanResourceGroup'), '-oms', uniqueString(resourceGroup().id))]",
+      "workspaceName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
       "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]",
       "batch": {
         "solutions": [
