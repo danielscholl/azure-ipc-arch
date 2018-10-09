@@ -677,7 +677,7 @@
               "keyVault": {
                 "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
-              "secretName": "servicePrincipalClientId"
+              "secretName": "clientId"
             }
           },
           "servicePrincipalClientKey": {
@@ -685,7 +685,7 @@
               "keyVault": {
                 "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
-              "secretName": "servicePrincipalClientKey"
+              "secretName": "clientSecret"
             }
           }
          }
