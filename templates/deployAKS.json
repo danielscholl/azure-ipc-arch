@@ -96,19 +96,6 @@
       }
     },
     {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "name": "[guid(resourceGroup().id, 'containerRegistry')]",
-      "apiVersion": "2017-10-01-preview",
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[variables('contributorRole')]",
-        "principalId": "[parameters('servicePrincipalClientId')]",
-        "scope": "[resourceGroup().Id]"
-      }
-    },
-    {
       "comments": "## Managed Kubernetes ##",
       "name": "[variables('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
