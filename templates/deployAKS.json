@@ -157,19 +157,6 @@
           }
         }
       }
-    },
-    {
-      "type": "Microsoft.Network/virtualNetworks/subnets/providers/roleAssignments",
-      "apiVersion": "2017-05-01",
-      "name": "[concat(guid(concat(resourceGroup().id), 'kubernetes'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
-        "principalId": "[parameters('servicePrincipalClientId')]",
-        "scope": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('subnetName'))]"
-      }
     }
   ],
   "outputs": {
