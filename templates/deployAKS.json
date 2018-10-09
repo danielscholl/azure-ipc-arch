@@ -2,6 +2,18 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network Name to associate VM to."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet Name to associate VM to."
+      }
+    },
     "subnetId": {
       "type": "string",
       "metadata": {
@@ -66,14 +78,14 @@
   "variables": {
     "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
     "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
-    "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
     "clusterName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '-aks')]",
     "linuxProfile": {
       "adminUsername": "[parameters('adminUserName')]",
       "sshRsaPublicKey": "[parameters('publicSSHKeyData')]"
     },
+    "HttpApplicationRouting": true,
     "NetworkPlugin": "azure",
-    "ServiceCidr": "192.168.1.0/24",
+    "ServiceCidr": "10.99.0.0/16",
     "DnsServiceIp": "192.168.1.10",
     "DockerBridgeCidr": "172.17.0.1/16"
   },
@@ -131,6 +143,11 @@
           "clientId": "[parameters('servicePrincipalClientId')]",
           "secret": "[parameters('servicePrincipalClientSecret')]"
         },
+        "addonProfiles": {
+          "httpApplicationRouting": {
+            "enabled": "[variables('HttpApplicationRouting')]"
+          }
+        },
         "networkConfiguration": {
           "networkProfile": {
             "networkPlugin": "[variables('NetworkPlugin')]",
@@ -139,6 +156,19 @@
             "dockerBridgeCidr": "[variables('DockerBridgeCidr')]"
           }
         }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets/providers/roleAssignments",
+      "apiVersion": "2017-05-01",
+      "name": "[concat(guid(concat(resourceGroup().id), 'kubernetes'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+        "principalId": "[parameters('servicePrincipalClientId')]",
+        "scope": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('subnetName'))]"
       }
     }
   ],
@@ -157,5 +187,4 @@
       }
     }
   }
-
 }
