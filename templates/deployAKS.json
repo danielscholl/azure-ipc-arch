@@ -1,26 +1,172 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {
-        "registryName": "[[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]]"
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID to associate VM to."
+      }
     },
-    "resources": [
-        {
-            "comments": "## Container Registry ##",
-            "name": "[variables('registryName')]",
-            "type": "Microsoft.ContainerRegistry/registries",
-            "apiVersion": "2017-10-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [],
-            "sku": {
-              "name": "Standard",
-              "tier": "Standard"
-            },
-            "properties": {
-              "adminUserEnabled": false
-            }
+    "linuxAdminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "User name for the Linux Virtual Machines."
+      }
+    },
+    "sshRSAPublicKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'"
+      }
+    },
+    "servicePrincipalClientId": {
+      "metadata": {
+        "description": "Client ID (used by cloudprovider)"
+      },
+      "type": "securestring"
+    },
+    "servicePrincipalClientSecret": {
+      "metadata": {
+        "description": "The Service Principal Client Secret."
+      },
+      "type": "securestring"
+    },
+    "agentCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The number of nodes for the cluster."
+      },
+      "minValue": 1,
+      "maxValue": 50
+    },
+    "agentVMSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The size of the Virtual Machine."
+      },
+      "defaultValue": "Standard_B2ms"
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "defaultValue": "1.9.6",
+      "allowedValues": [
+        "1.7.7",
+        "1.8.1",
+        "1.9.1",
+        "1.9.6"
+      ],
+      "metadata": {
+        "description": "The version of Kubernetes."
+      }
+    }
+  },
+  "variables": {
+    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
+    "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+    "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
+    "clusterName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '-aks')]",
+    "linuxProfile": {
+      "adminUsername": "[parameters('linuxAdminUsername')]",
+      "sshRsaPublicKey": "[parameters('sshRSAPublicKey')]"
+    },
+    "NetworkPlugin": "azure",
+    "ServiceCidr": "10.3.0.0/24",
+    "DnsServiceIp": "10.3.0.10",
+    "DockerBridgeCidr": "172.17.0.1/16",
+    "contributorRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa')]"
+
+  },
+  "resources": [
+    {
+      "comments": "## Container Registry ##",
+      "name": "[variables('registryName')]",
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2017-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
+      "properties": {
+        "adminUserEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "name": "ace492e6-ebf6-48fa-8dd4-ea762489cbf3",
+      "apiVersion": "2017-10-01-preview",
+      "properties": {
+        "roleDefinitionId": "[variables('contributorRole')]",
+        "principalId": "[parameters('servicePrincipalClientId')]",
+        "scope": "[variables('registryId')]"
+      }
+    },
+    {
+      "comments": "## Managed Kubernetes ##",
+      "name": "[variables('clusterName')]",
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2018-03-31",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+      ],
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "enableRBAC": false,
+        "dnsPrefix": "[variables('clusterName')]",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "osDiskSizeGB": 30,
+            "count": "[parameters('agentCount')]",
+            "vmSize": "[parameters('agentVMSize')]",
+            "osType": "Linux",
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetID": "[parameters('subnetId')]"
           }
-    ],
-    "outputs": {}
+        ],
+        "linuxProfile": {
+          "adminUsername": "[variables('linuxProfile').adminUsername]",
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "[variables('linuxProfile').sshRsaPublicKey]"
+              }
+            ]
+          }
+        },
+        "servicePrincipalProfile": {
+          "clientId": "[parameters('servicePrincipalClientId')]",
+          "secret": "[parameters('servicePrincipalClientSecret')]"
+        },
+        "networkConfiguration": {
+          "networkProfile": {
+            "networkPlugin": "[variables('NetworkPlugin')]",
+            "serviceCidr": "[variables('ServiceCidr')]",
+            "dnsServiceIp": "[variables('DnsServiceIp')]",
+            "dockerBridgeCidr": "[variables('DockerBridgeCidr')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "containerRegistry": {
+      "type": "object",
+      "value": {
+        "id": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),'2016-06-27-preview').loginServer]",
+        "name": "[variables('registryName')]"
+      }
+    },
+    "controlPlane": {
+      "type": "object",
+      "value": {
+        "fqdn": "[reference(variables('clusterName')).fqdn]"
+      }
+    }
+  }
+
 }

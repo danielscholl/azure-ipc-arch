@@ -21,7 +21,7 @@
       "metadata": {
         "description": "The virtual machine server size."
       },
-      "defaultValue": "Standard_A2"
+      "defaultValue": "Standard_B1ms"
     },
     "adminUserName": {
       "type": "string",

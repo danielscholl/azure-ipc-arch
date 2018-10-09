@@ -48,7 +48,7 @@
       "metadata": {
         "description": "The virtual machine server size."
       },
-      "defaultValue": "Standard_DS1_v2"
+      "defaultValue": "Standard_B2s"
     },
     "adminUserName": {
       "type": "string",
