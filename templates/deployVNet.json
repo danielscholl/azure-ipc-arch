@@ -44,6 +44,12 @@
         "description": "Remote Access CIDR"
       },
       "defaultValue": "Internet"
+    },
+    "servicePrincipalClientId": {
+      "metadata": {
+        "description": "Client ID (used by cloudprovider)"
+      },
+      "type": "securestring"
     }
   },
   "variables": {
@@ -62,7 +68,8 @@
     "Nsg1Name": "[concat(variables('VNetName'), '-', variables('Subnet1Name'), '-nsg')]",
     "Nsg2Name": "[concat(variables('VNetName'), '-', variables('Subnet2Name'), '-nsg')]",
     "Nsg3Name": "[concat(variables('VNetName'), '-', variables('Subnet3Name'), '-nsg')]",
-    "Nsg4Name": "[concat(variables('VNetName'), '-', variables('Subnet4Name'), '-nsg')]"
+    "Nsg4Name": "[concat(variables('VNetName'), '-', variables('Subnet4Name'), '-nsg')]",
+    "networkContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]"
   },
   "resources": [
     {
@@ -373,6 +380,18 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/providers/roleAssignments",
+      "apiVersion": "2017-05-01",
+      "name": "[guid(resourceGroup().id, 'monitoringUsers')]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+          "roleDefinitionId": "[variables('networkContributorRole')]",
+          "principalId": "[parameters('servicePrincipalClientId')]"
       }
     }
   ],

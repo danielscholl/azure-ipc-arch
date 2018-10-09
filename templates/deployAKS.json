@@ -75,9 +75,7 @@
     "NetworkPlugin": "azure",
     "ServiceCidr": "10.99.0.0/24",
     "DnsServiceIp": "10.99.0.10",
-    "DockerBridgeCidr": "172.17.0.1/16",
-    "contributorRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa')]"
-
+    "DockerBridgeCidr": "172.17.0.1/16"
   },
   "resources": [
     {
@@ -94,54 +92,6 @@
       "properties": {
         "adminUserEnabled": false
       }
-    },
-    {
-      "comments": "## Managed Kubernetes ##",
-      "name": "[variables('clusterName')]",
-      "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2018-03-31",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
-      ],
-      "properties": {
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
-        "enableRBAC": false,
-        "dnsPrefix": "[variables('clusterName')]",
-        "agentPoolProfiles": [
-          {
-            "name": "agentpool",
-            "osDiskSizeGB": 30,
-            "count": "[parameters('agentCount')]",
-            "vmSize": "[parameters('agentVMSize')]",
-            "osType": "Linux",
-            "storageProfile": "ManagedDisks",
-            "vnetSubnetID": "[parameters('subnetId')]"
-          }
-        ],
-        "linuxProfile": {
-          "adminUsername": "[variables('linuxProfile').adminUsername]",
-          "ssh": {
-            "publicKeys": [
-              {
-                "keyData": "[variables('linuxProfile').sshRsaPublicKey]"
-              }
-            ]
-          }
-        },
-        "servicePrincipalProfile": {
-          "clientId": "[parameters('servicePrincipalClientId')]",
-          "secret": "[parameters('servicePrincipalClientKey')]"
-        },
-        "networkConfiguration": {
-          "networkProfile": {
-            "networkPlugin": "[variables('NetworkPlugin')]",
-            "serviceCidr": "[variables('ServiceCidr')]",
-            "dnsServiceIp": "[variables('DnsServiceIp')]",
-            "dockerBridgeCidr": "[variables('DockerBridgeCidr')]"
-          }
-        }
-      }
     }
   ],
   "outputs": {
@@ -150,12 +100,6 @@
       "value": {
         "id": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),'2016-06-27-preview').loginServer]",
         "name": "[variables('registryName')]"
-      }
-    },
-    "controlPlane": {
-      "type": "object",
-      "value": {
-        "fqdn": "[reference(variables('clusterName')).fqdn]"
       }
     }
   }
