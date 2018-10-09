@@ -73,8 +73,8 @@
       "sshRsaPublicKey": "[parameters('publicSSHKeyData')]"
     },
     "NetworkPlugin": "azure",
-    "ServiceCidr": "10.99.0.0/24",
-    "DnsServiceIp": "10.99.0.10",
+    "ServiceCidr": "192.168.1.0/24",
+    "DnsServiceIp": "192.168.1.10",
     "DockerBridgeCidr": "172.17.0.1/16"
   },
   "resources": [
