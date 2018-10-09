@@ -381,7 +381,19 @@
           }
         ]
       }
-    }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/providers/roleAssignments",
+      "apiVersion": "2017-05-01",
+      "name": "[concat(variables('vnetName'), '/Microsoft.Authorization/', guid(concat(resourceGroup().id), variables('networkContributorRole')))]",
+      "dependsOn": [
+          "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('networkContributorRole')]",
+        "principalId": "[parameters('servicePrincipalClientId')]"
+      }
+  }
   ],
   "outputs": {
     "virtualNetwork": {
