@@ -73,8 +73,8 @@
       "sshRsaPublicKey": "[parameters('publicSSHKeyData')]"
     },
     "NetworkPlugin": "azure",
-    "ServiceCidr": "10.3.0.0/24",
-    "DnsServiceIp": "10.3.0.10",
+    "ServiceCidr": "10.99.0.0/24",
+    "DnsServiceIp": "10.99.0.10",
     "DockerBridgeCidr": "172.17.0.1/16",
     "contributorRole": "[concat(subscription().Id, '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa')]"
 
