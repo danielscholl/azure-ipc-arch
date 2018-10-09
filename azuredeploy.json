@@ -622,6 +622,19 @@
           }
         }
       }
+    },
+    {
+      "name": "TemplateLogAnalytics",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployLogAnalytics.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": { }
+      }
     }
   ],
   "outputs": {
@@ -648,6 +661,10 @@
     "funcApp": {
       "type": "object",
       "value": "[reference('TemplateFuncApp').outputs.web.value]"
+    },
+    "logAnalytics": {
+      "type": "object",
+      "value": "[reference('TemplateLogAnalytics').outputs.workspace.value]"
     }
   }
 }
