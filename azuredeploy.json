@@ -172,6 +172,22 @@
       },
       "defaultValue": 2,
       "minValue": 2
+    },
+    "agentCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of machines to deploy."
+      },
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 50
+    },
+    "agentVMSize": {
+      "type": "string",
+      "metadata": {
+        "description": "The size of the Virtual Machine."
+      },
+      "defaultValue": "Standard_B2ms"
     }
   },
   "variables": {},
@@ -691,6 +707,12 @@
               },
               "secretName": "clientSecret"
             }
+          },
+          "agentCount": {
+            "value": "[parameters('agentCount')]"
+          },
+          "agentVMSize": {
+            "value": "[parameters('agentVmSize')]"
           }
          }
       }

@@ -8,13 +8,13 @@
         "description": "Subnet ID to associate VM to."
       }
     },
-    "linuxAdminUsername": {
+    "adminUserName": {
       "type": "string",
       "metadata": {
         "description": "User name for the Linux Virtual Machines."
       }
     },
-    "sshRSAPublicKey": {
+    "publicSSHKeyData": {
       "type": "string",
       "metadata": {
         "description": "Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'"
@@ -68,8 +68,8 @@
     "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
     "clusterName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '-aks')]",
     "linuxProfile": {
-      "adminUsername": "[parameters('linuxAdminUsername')]",
-      "sshRsaPublicKey": "[parameters('sshRSAPublicKey')]"
+      "adminUsername": "[parameters('adminUserName')]",
+      "sshRsaPublicKey": "[parameters('publicSSHKeyData')]"
     },
     "NetworkPlugin": "azure",
     "ServiceCidr": "10.3.0.0/24",
