@@ -303,12 +303,6 @@
           },
           "subnetFe": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
-          },
-          "agentCount": {
-            "value": 1
-          },
-          "agentSize": {
-            "value": "Standard_B2ms"
           }
         }
       }
