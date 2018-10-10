@@ -132,8 +132,8 @@
             "osDiskSizeGB": 30,
             "osType": "Linux",
             "storageProfile": "ManagedDisks",
-            "count": 1,
-            "vmSize": "[variables('agentProfile').count]",
+            "count": "[variables('agentProfile').count]",
+            "vmSize": "[variables('agentProfile').size]",
             "vnetSubnetID": "[variables('agentProfile').subnet]"
           }
         ],
