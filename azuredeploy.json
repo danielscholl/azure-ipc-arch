@@ -172,39 +172,41 @@
       },
       "defaultValue": 2,
       "minValue": 2
-    },
-    "agentCount": {
-      "type": "int",
-      "metadata": {
-        "description": "Number of machines to deploy."
-      },
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 50
-    },
-    "agentVMSize": {
-      "type": "string",
-      "metadata": {
-        "description": "The size of the Virtual Machine."
-      },
-      "defaultValue": "Standard_B2ms"
     }
   },
   "variables": {},
   "resources": [
     {
-      "name": "TemplateStorage",
+      "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployVNet.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "storageAccountType": {
-            "value": "Standard_LRS"
+          "vnetPrefix": {
+            "value": "[parameters('vnetPrefix')]"
+          },
+          "subnet1Prefix": {
+            "value": "[parameters('containerCIDR')]"
+          },
+          "subnet2Prefix": {
+            "value": "[parameters('backCIDR')]"
+          },
+          "subnet3Prefix": {
+            "value": "[parameters('frontCIDR')]"
+          },
+          "subnet4Prefix": {
+            "value": "[parameters('manageCIDR')]"
+          },
+          "subnet5Prefix": {
+            "value": "[parameters('gatewayCIDR')]"
+          },
+          "remoteAccessACL": {
+            "value": "[parameters('remoteAccessACL')]"
           }
         }
       }
@@ -257,6 +259,23 @@
       }
     },
     {
+      "name": "TemplateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
+          }
+        }
+      }
+    },
+    {
       "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -267,38 +286,6 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(parameters('templateURL'), 'deployPrivateStorageAccount.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "storageAccountType": {
-            "value": "Standard_LRS"
-          },
-          "vnetName": {
-            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
-          },
-          "subnetAks": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
-          },
-          "subnetBe": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
-          },
-          "subnetFe": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateVNet",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployVNet.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
