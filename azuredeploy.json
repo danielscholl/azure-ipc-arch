@@ -187,6 +187,9 @@
           "servicePrincipalClientKey": {
             "value": "[parameters('servicePrincipalClientKey')]"
           },
+          "servicePrincipalObjectId": {
+            "value": "[parameters('servicePrincipalObjectId')]"
+          },
           "adminUserName": {
             "value": "[parameters('adminUserName')]"
           },
@@ -250,6 +253,10 @@
       "name": "TemplateKubernetes",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet",
+        "TemplatePrivateKeyVault"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -265,6 +272,9 @@
       "name": "TemplateRoleAssignment",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateKubernetes"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -282,7 +292,12 @@
             "value": "[reference('TemplateKubernetes').outputs.containerRegistry.value.id]"
           },
           "principal": {
-            "value": "[parameters('servicePrincipalObjectId')]"
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "adminUserName"
+            }
           }
         }
       }
