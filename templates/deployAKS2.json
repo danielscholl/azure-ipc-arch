@@ -75,7 +75,7 @@
     },
     "agentProfile": {
       "count": "[parameters('agentCount')]",
-      "size": "[parameters('agentVMSize')]",
+      "size": "[int(parameters('agentVMSize'))]",
       "subnet": "[parameters('subnetId')]"
     },
     "managerProfile": {
@@ -132,7 +132,7 @@
             "osDiskSizeGB": 30,
             "osType": "Linux",
             "storageProfile": "ManagedDisks",
-            "count": "[int(variables('agentProfile').size)]",
+            "count": 1,
             "vmSize": "[variables('agentProfile').count]",
             "vnetSubnetID": "[variables('agentProfile').subnet]"
           }
