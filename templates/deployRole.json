@@ -19,7 +19,7 @@
         "description": "Built-in role to assign"
       }
     },
-    "resourceId": {
+    "resource": {
       "type": "string",
       "metadata": {
         "description": "The Resource to give scope to."
@@ -45,7 +45,7 @@
       "properties": {
         "roleDefinitionId": "[variables(parameters('roleType'))]",
         "principalId": "[parameters('principal')]",
-        "scope": "[parameters('resourceId')]"
+        "scope": "[parameters('resource')]"
       }
     }
   ]
