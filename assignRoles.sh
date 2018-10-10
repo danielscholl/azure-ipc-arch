@@ -26,14 +26,34 @@ fi
 function ContainerRole() {
   # Required Argument $1 = RESOURCE_GROUP
   if [ -z $1 ]; then
-        tput setaf 1; echo 'ERROR: Argument $1 (RESOURCE_GROUP) not received'; tput sgr0
-        exit 1;
-    fi
+    tput setaf 1; echo 'ERROR: Argument $1 (RESOURCE_GROUP) not received'; tput sgr0
+    exit 1;
+  fi
 
-    local _result=$(az acr list --resource-group $1 --query [0].id -otsv)
-    if [ "$_result"  == "" ]; then
-      az role assignment create --assignee $OBJECT_ID --scope $RegistryId --role Reader
-    fi
+  local _result=$(az acr list --resource-group $1 --query [0].id -otsv)
+
+  if [ "$_result" == "" ]; then
+    tput setaf 1; echo 'No Container Registry Found'; tput sgr0
+  else
+    tput setaf 3; echo 'Giving Reader rights to the Container Registry...' ; tput sgr0
+    az role assignment create --assignee $OBJECT_ID --scope $_result --role Reader -ojsonc
+  fi
+}
+function NetworkRole() {
+  # Required Argument $1 = RESOURCE_GROUP
+  if [ -z $1 ]; then
+    tput setaf 1; echo 'ERROR: Argument $1 (RESOURCE_GROUP) not received'; tput sgr0
+    exit 1;
+  fi
+
+  local _result=$(az network vnet list --resource-group $1 --query [0].id -otsv)
+
+  if [ "$_result"  == "" ]; then
+    tput setaf 1; echo 'No Virtual Network Found'; tput sgr0
+  else
+    tput setaf 3; echo 'Giving Contributor rights to the Virtual Network...' ; tput sgr0
+    az role assignment create --assignee $OBJECT_ID --scope $_result --role Contributor -ojsonc
+  fi
 }
 
 ###############################
@@ -43,3 +63,4 @@ function ContainerRole() {
 tput setaf 2; echo 'Assigning Roles...' ; tput sgr0
 RESOURCE_GROUP="$INITIALS-arch"
 ContainerRole $RESOURCE_GROUP
+NetworkRole $RESOURCE_GROUP

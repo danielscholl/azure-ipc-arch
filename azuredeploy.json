@@ -113,11 +113,13 @@
       "minLength": 10
     },
     "agentCount": {
-      "type": "string",
+      "type": "int",
+      "defaultValue": 1,
       "metadata": {
-        "description": "Number of Kubernetes Agents"
+        "description": "The number of nodes for the cluster."
       },
-      "defaultValue": 1
+      "minValue": 1,
+      "maxValue": 50
     },
     "agentSize": {
       "type": "string",
