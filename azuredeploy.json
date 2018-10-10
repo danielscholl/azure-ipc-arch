@@ -295,6 +295,9 @@
       "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -304,12 +307,24 @@
         "parameters": {
           "storageAccountType": {
             "value": "Standard_LRS"
+          },
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          },
+          "subnetAks": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
+          },
+          "subnetBe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
+          },
+          "subnetFe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
           }
         }
       }
     },
     {
-      "name": "TemplatePrivateStorage",
+      "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -318,7 +333,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployPrivateStorageAccount.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployVNet.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
