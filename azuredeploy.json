@@ -132,6 +132,27 @@
   "variables": {},
   "resources": [
     {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(resourceGroup().name, '-be')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(resourceGroup().name, '-fe')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(resourceGroup().name, '-aks')]",
+      "properties": {}
+    },
+    {
       "name": "TemplateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
