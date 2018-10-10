@@ -17,7 +17,7 @@
       }
     },
     "agentCount": {
-      "type": "int",
+      "type": "string",
       "defaultValue": 1,
       "metadata": {
         "description": "The number of nodes for the cluster."

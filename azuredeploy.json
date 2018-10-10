@@ -113,7 +113,7 @@
       "minLength": 10
     },
     "agentCount": {
-      "type": "int",
+      "type": "string",
       "metadata": {
         "description": "Number of Kubernetes Agents"
       },
