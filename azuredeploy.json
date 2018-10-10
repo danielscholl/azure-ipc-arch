@@ -10,6 +10,21 @@
       "minLength": 2,
       "maxLength": 5
     },
+    "random": {
+      "type": "int",
+      "metadata": {
+        "description": "3 Digit Random Integer"
+      },
+      "minValue": 100,
+      "maxValue": 999
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "defaultValue": "eastus"
+    },
     "templateURL": {
       "type": "string",
       "metadata": {
@@ -129,33 +144,27 @@
       "defaultValue": "Standard_B2ms"
     }
   },
-  "variables": {},
+  "variables": {
+    "rgGroup": "[concat(parameters('initials'), '-arch')]",
+    "aksGroup": "[concat(parameters('initials'), '-arch-aks')]"
+  },
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
+      "name": "[variables('rgGroup')]",
       "apiVersion": "2018-05-01",
-      "location": "[resourceGroup().location]",
-      "name": "[concat(resourceGroup().name, '-be')]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2018-05-01",
-      "location": "[resourceGroup().location]",
-      "name": "[concat(resourceGroup().name, '-fe')]",
-      "properties": {}
-    },
-    {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2018-05-01",
-      "location": "[resourceGroup().location]",
-      "name": "[concat(resourceGroup().name, '-aks')]",
+      "location": "[parameters('location')]",
+      
       "properties": {}
     },
     {
       "name": "TemplateStorage",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('rgGroup')]",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgGroup'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -172,7 +181,11 @@
     {
       "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('rgGroup')]",
       "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgGroup'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -207,8 +220,10 @@
     {
       "name": "TemplatePrivateKeyVault",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('rgGroup')]",
       "apiVersion": "2015-01-01",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgGroup'))]",
         "TemplateVNet"
       ],
       "properties": {
@@ -257,8 +272,10 @@
     {
       "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('rgGroup')]",
       "apiVersion": "2015-01-01",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgGroup'))]",
         "TemplateVNet"
       ],
       "properties": {
@@ -289,8 +306,10 @@
     {
       "name": "TemplateKubernetes",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('aksGroup')]",
       "apiVersion": "2015-01-01",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('aksGroup'))]",
         "TemplateVNet",
         "TemplatePrivateKeyVault"
       ],
@@ -301,6 +320,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "random": {
+            "value": "[parameters('random')]"
+          },
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Id]"
           },

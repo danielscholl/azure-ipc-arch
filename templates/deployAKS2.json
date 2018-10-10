@@ -2,6 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "random": {
+      "type": "int",
+      "metadata": {
+        "description": "3 Digit Random Integer"
+      },
+      "minValue": 100,
+      "maxValue": 999
+    },
     "kubernetesVersion": {
       "type": "string",
       "defaultValue": "1.11.3",
@@ -67,7 +75,7 @@
     "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
     "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
     "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
-    "clusterName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '-aks')]",
+    "clusterName": "[concat('aks-', parameters('random'))]",
     "clusterId": "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]",
     "linuxProfile": {
       "adminUsername": "[parameters('adminUserName')]",
