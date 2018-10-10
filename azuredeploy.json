@@ -2,6 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "initials": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
     "templateURL": {
       "type": "string",
       "metadata": {
@@ -196,6 +204,79 @@
           },
           "subnetFe": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplatePrivateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployPrivateStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
+          },
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          },
+          "subnetAks": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
+          },
+          "subnetBe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
+          },
+          "subnetFe": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateKubernetes",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployAKS2.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+
+        }
+      }
+    },
+    {
+      "name": "TemplateRoleAssignment",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployRole.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "builtInRoleType": {
+            "value": "Owner"
+          },
+          "principalId": {
+            "value": "[parameters('servicePrincipalClientId')]"
+          },
+          "scopeId": {
+            "value": "[reference('TemplateKubernetes').outputs.containerRegistry.value.id]"
+          },
+          "roleNameGuid": {
+            "value": "[guid(resourceGroup().id, 'containerRegistry')]"
           }
         }
       }

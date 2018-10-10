@@ -4,7 +4,8 @@
     "parameters": {},
     "variables": {
       "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-      "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]"
+      "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+      "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
     },
     "resources": [
         {
@@ -27,7 +28,7 @@
       "containerRegistry": {
         "type": "object",
         "value": {
-          "id": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),'2016-06-27-preview').loginServer]",
+          "id": "[variables('registryId')]",
           "name": "[variables('registryName')]"
         }
       }
