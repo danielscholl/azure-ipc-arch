@@ -1,36 +1,52 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {},
-    "variables": {
-      "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-      "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
-      "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "principal": {
+      "metadata": {
+        "description": "The Service Principal Object Id."
+      },
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
+    "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+    "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+  },
+  "resources": [
+    {
+      "comments": "## Container Registry ##",
+      "name": "[variables('registryName')]",
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2017-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
+      "properties": {
+        "adminUserEnabled": false
+      }
     },
-    "resources": [
-        {
-            "comments": "## Container Registry ##",
-            "name": "[variables('registryName')]",
-            "type": "Microsoft.ContainerRegistry/registries",
-            "apiVersion": "2017-10-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [],
-            "sku": {
-              "name": "Standard",
-              "tier": "Standard"
-            },
-            "properties": {
-              "adminUserEnabled": false
-            }
-          }
-    ],
-    "outputs": {
-      "containerRegistry": {
-        "type": "object",
-        "value": {
-          "id": "[variables('registryId')]",
-          "name": "[variables('registryName')]"
-        }
+    {
+      "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[guid(resourceGroup().id, 'containerRegistry')]",
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[parameters('principal')]"
       }
     }
+  ],
+  "outputs": {
+    "containerRegistry": {
+      "type": "object",
+      "value": {
+        "id": "[variables('registryId')]",
+        "name": "[variables('registryName')]"
+      }
+    }
+  }
 }

@@ -264,33 +264,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-
-        }
-      }
-    },
-    {
-      "name": "TemplateRoleAssignment",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateKubernetes"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployRole.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "roleName": {
-            "value": "containerRegistry"
-          },
-          "roleType": {
-            "value": "Owner"
-          },
-          "resource": {
-            "value": "[reference('TemplateKubernetes').outputs.containerRegistry.value.id]"
-          },
           "principal": {
             "reference": {
               "keyVault": {
