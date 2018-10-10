@@ -296,7 +296,7 @@
               "keyVault": {
                 "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
               },
-              "secretName": "adminUserName"
+              "secretName": "principalId"
             }
           }
         }

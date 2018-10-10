@@ -14,6 +14,12 @@
         "description": "Service Principal App Secret (also called Client Key) that has contributor rights to the subscription used for this deployment. It is used by Spinnaker to dynamically manage resources."
       }
     },
+    "servicePrincipalObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Service Principal ObjectId that . It is used by Spinnaker to dynamically manage resources."
+      }
+    },
     "adminUserName": {
       "type": "string",
       "metadata": {
@@ -164,6 +170,17 @@
           "apiVersion": "2018-02-14",
           "properties": {
             "value": "[parameters('servicePrincipalClientKey')]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+          ]
+        },
+        {
+          "type": "secrets",
+          "name": "principalId",
+          "apiVersion": "2018-02-14",
+          "properties": {
+            "value": "[parameters('servicePrincipalObjectId')]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
