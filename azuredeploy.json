@@ -2,60 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "initials": {
-      "type": "string",
-      "metadata": {
-        "description": "Small unique string."
-      },
-      "minLength": 2,
-      "maxLength": 5
-    },
     "templateURL": {
       "type": "string",
       "metadata": {
         "description": "URL Location on where to find the templates"
       },
       "defaultValue": "https://raw.githubusercontent.com/danielscholl/azure-ipc-arch/master/templates/"
-    },
-    "servicePrincipalClientId": {
-      "type": "string",
-      "metadata": {
-        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
-      }
-    },
-    "servicePrincipalClientKey": {
-      "type": "string",
-      "metadata": {
-        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
-      }
-    },
-    "adminUserName": {
-      "type": "string",
-      "metadata": {
-        "description": "Admin user account name."
-      },
-      "minLength": 5
-    },
-    "adminSshKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Admin user public ssh key."
-      },
-      "minLength": 10
-    },
-    "dbUserName": {
-      "type": "string",
-      "metadata": {
-        "description": "Database SA Account UserName"
-      },
-      "minLength": 5
-    },
-    "dbPasword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Database SA Account Password"
-      },
-      "minLength": 10
     },
     "vnetPrefix": {
       "type": "string",
@@ -106,72 +58,45 @@
       },
       "defaultValue": "Internet"
     },
-    "bastionSize": {
+    "servicePrincipalClientId": {
       "type": "string",
       "metadata": {
-        "description": "Virtual Machine Size"
-      },
-      "defaultValue": "Standard_B1ms"
+        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+      }
     },
-    "frontendLoadBalanceIP": {
+    "servicePrincipalClientKey": {
       "type": "string",
       "metadata": {
-        "description": "Static IP Address for the Load Balancer."
-      },
-      "defaultValue": "10.0.17.4"
+        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+      }
     },
-    "backendLoadBalanceIP": {
+    "adminUserName": {
       "type": "string",
       "metadata": {
-        "description": "Static IP Address for the Load Balancer."
+        "description": "Admin user account name."
       },
-      "defaultValue": "10.0.16.4"
+      "minLength": 5
     },
-    "backendServerNamePrefix": {
+    "adminSshKey": {
+      "type": "securestring",
       "metadata": {
-        "description": "Backend Virtual Machine Name."
+        "description": "Admin user public ssh key."
       },
+      "minLength": 10
+    },
+    "dbUserName": {
       "type": "string",
-      "minLength": 1,
-      "defaultValue": "be"
-    },
-    "backendServerSize": {
       "metadata": {
-        "description": "Backend Virtual Machine Size."
+        "description": "Database SA Account UserName"
       },
-      "type": "string",
-      "defaultValue": "Standard_B2s"
+      "minLength": 5
     },
-    "backendServerCount": {
-      "type": "int",
+    "dbPasword": {
+      "type": "securestring",
       "metadata": {
-        "description": "Number of machines to deploy."
+        "description": "Database SA Account Password"
       },
-      "defaultValue": 2,
-      "minValue": 2
-    },
-    "frontendServerNamePrefix": {
-      "metadata": {
-        "description": "Frontend Virtual Machine Name."
-      },
-      "type": "string",
-      "minLength": 1,
-      "defaultValue": "fe"
-    },
-    "frontendServerSize": {
-      "metadata": {
-        "description": "Frontend Virtual Machine Size."
-      },
-      "type": "string",
-      "defaultValue": "Standard_B2s"
-    },
-    "frontendServerCount": {
-      "type": "int",
-      "metadata": {
-        "description": "Number of machines to deploy."
-      },
-      "defaultValue": 2,
-      "minValue": 2
+      "minLength": 10
     }
   },
   "variables": {},
@@ -274,397 +199,7 @@
           }
         }
       }
-    },
-    {
-      "name": "TemplatePrivateStorage",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployPrivateStorageAccount.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "storageAccountType": {
-            "value": "Standard_LRS"
-          },
-          "vnetName": {
-            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
-          },
-          "subnetAks": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Name]"
-          },
-          "subnetBe": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Name]"
-          },
-          "subnetFe": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLinuxBastionHost",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplatePrivateKeyVault",
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLinuxBastion.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet4Id]"
-          },
-          "vmSize": {
-            "value": "[parameters('bastionSize')]"
-          },
-          "adminUserName": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "adminUserName"
-            }
-          },
-          "publicSSHKeyData": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "sshPublicKey"
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLoadBalancerBE",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "prefix": {
-            "value": "be"
-          },
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
-          },
-          "staticIpAddress": {
-            "value": "[parameters('backendLoadBalanceIP')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLoadBalancerFE",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "prefix": {
-            "value": "fe"
-          },
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
-          },
-          "staticIpAddress": {
-            "value": "[parameters('frontendLoadBalanceIP')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLinuxVMasBE",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplatePrivateStorage",
-        "TemplatePrivateKeyVault",
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
-          },
-          "loadBalancerId": {
-            "value": "[reference('TemplateLoadBalancerFE').outputs.loadBalancer.value.id]"
-          },
-          "storageAccount": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
-          },
-          "storageKey": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
-          },
-          "vmName": {
-            "value": "[parameters('backendServerNamePrefix')]"
-          },
-          "vmSize": {
-            "value": "[parameters('backendServerSize')]"
-          },
-          "numberOfInstances": {
-            "value": "[parameters('backendServerCount')]"
-          },
-          "adminUserName": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "adminUserName"
-            }
-          },
-          "sshKeyData": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "sshPublicKey"
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLinuxVMasFE",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplatePrivateStorage",
-        "TemplatePrivateKeyVault",
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLinuxVMas.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
-          },
-          "loadBalancerId": {
-            "value": "[reference('TemplateLoadBalancerBE').outputs.loadBalancer.value.id]"
-          },
-          "storageAccount": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.name]"
-          },
-          "storageKey": {
-            "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value.key]"
-          },
-          "vmName": {
-            "value": "[parameters('frontendServerNamePrefix')]"
-          },
-          "vmSize": {
-            "value": "[parameters('frontendServerSize')]"
-          },
-          "numberOfInstances": {
-            "value": "[parameters('frontendServerCount')]"
-          },
-          "adminUserName": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "adminUserName"
-            }
-          },
-          "sshKeyData": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "sshPublicKey"
-            }
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateSqlDatabase",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deploySqlDatabase.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "prefix": {
-            "value": "[parameters('initials')]"
-          },
-          "sqlAdministratorLogin": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "dbUserName"
-            }
-          },
-          "sqlAdministratorPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "dbPasword"
-            }
-          },
-          "subnetAksId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
-          },
-          "subnetBeId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
-          },
-          "subnetFeId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateVpnGateway",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVNet"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployVpnGateway.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet5Id]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateWebApp",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplateVpnGateway"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployWebApp.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "vnetName": {
-            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateFuncApp",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "TemplatePrivateStorage",
-        "TemplateVpnGateway"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployFuncApp.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "vnetName": {
-            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
-          },
-          "storageAccountName": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
-          },
-          "storageAccountId": {
-            "value": "[reference('TemplateStorage').outputs.storageAccount.value.id]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateLogAnalytics",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployLogAnalytics.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {}
-      }
     }
   ],
-  "outputs": {
-    "storageAccount": {
-      "type": "object",
-      "value": "[reference('TemplatePrivateStorage').outputs.storageAccount.value]"
-    },
-    "keyVault": {
-      "type": "object",
-      "value": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value]"
-    },
-    "virtualNetwork": {
-      "type": "object",
-      "value": "[reference('TemplateVNet').outputs.virtualNetwork.value]"
-    },
-    "sqlDatabase": {
-      "type": "object",
-      "value": "[reference('TemplateSqlDatabase').outputs.database.value]"
-    },
-    "webApp": {
-      "type": "object",
-      "value": "[reference('TemplateWebApp').outputs.web.value]"
-    },
-    "funcApp": {
-      "type": "object",
-      "value": "[reference('TemplateFuncApp').outputs.web.value]"
-    },
-    "logAnalytics": {
-      "type": "object",
-      "value": "[reference('TemplateLogAnalytics').outputs.workspace.value]"
-    }
-  }
+  "outputs": {}
 }
