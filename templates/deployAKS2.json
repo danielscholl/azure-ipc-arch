@@ -75,7 +75,7 @@
     },
     "agentProfile": {
       "count": "[parameters('agentCount')]",
-      "size": "[int(parameters('agentVMSize'))]",
+      "size": "[parameters('agentVMSize')]",
       "subnet": "[parameters('subnetId')]"
     },
     "managerProfile": {
