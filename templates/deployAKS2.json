@@ -2,12 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "principal": {
-      "metadata": {
-        "description": "The Service Principal Object Id."
-      },
-      "type": "securestring"
-    }
+
   },
   "variables": {
     "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
@@ -28,15 +23,6 @@
       },
       "properties": {
         "adminUserEnabled": false
-      }
-    },
-    {
-      "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
-      "apiVersion": "2017-09-01",
-      "name": "[guid(resourceGroup().id, 'containerRegistry')]",
-      "properties": {
-        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[parameters('principal')]"
       }
     }
   ],

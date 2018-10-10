@@ -70,6 +70,9 @@ function CreateServicePrincipal() {
       CLIENT_ID=$(az ad sp list \
         --display-name $PrincipalName \
         --query [].appId -otsv)
+      OBJECT_ID=$(az ad sp list \
+        --display-name $PrincipalName \
+        --query [].objectId -otsv)
 
       echo "" >> .envrc
       echo "export CLIENT_ID=${CLIENT_ID}" >> .envrc
@@ -87,6 +90,7 @@ function CreateServicePrincipal() {
         fi
     fi
 }
+
 function CreateSSHKeys() {
   # Required Argument $1 = SSH_USER
   if [ -d ./.ssh ]
@@ -130,22 +134,3 @@ az group deployment create --template-file azuredeploy.json  \
   --parameters initials=$INITIALS \
   --parameters adminUserName=$LINUX_USER \
   --parameters dbUserName=$LINUX_USER
-
-
-exit
-
-  RegistryId=$(az acr show \
-            --name $Registry \
-            --resource-group $ResourceGroup \
-            --query id -otsv)
-
-# Grant Service Principal Read Access to the Registry
-## CLI USER MUST HAVE OWNER RIGHTS ON THE SUBSCRIPTION TO DO THIS
-az role assignment create \
-  --assignee $PrincipalId \
-  --scope $RegistryId \
-  --role Reader
-
-# Login to the Registry
-az acr login \
-  --name $Registry

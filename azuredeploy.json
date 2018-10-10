@@ -264,14 +264,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "principal": {
-            "reference": {
-              "keyVault": {
-                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
-              },
-              "secretName": "principalId"
-            }
-          }
+          
         }
       }
     }
