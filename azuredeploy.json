@@ -111,6 +111,20 @@
         "description": "Database SA Account Password"
       },
       "minLength": 10
+    },
+    "agentCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of Kubernetes Agents"
+      },
+      "defaultValue": 1
+    },
+    "agentSize": {
+      "type": "string",
+      "metadata": {
+        "description": "VM Size of Kubernetes Agents"
+      },
+      "defaultValue": "Standard_B2ms"
     }
   },
   "variables": {},
@@ -264,7 +278,47 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet1Id]"
+          },
+          "agentCount": {
+            "value": "[parameters('agentCount')]"
+          },
+          "agentVMSize": {
+            "value": "[parameters('agentSize')]"
+          },
+          "adminUserName": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "adminUserName"
+            }
+          },
+          "publicSSHKeyData": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "sshPublicKey"
+            }
+          },
+          "servicePrincipalClientId": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "clientId"
+            }
+          },
+          "servicePrincipalClientSecret": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "clientSecret"
+            }
+          }
         }
       }
     }
