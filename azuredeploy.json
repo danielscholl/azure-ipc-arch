@@ -210,41 +210,6 @@
       }
     },
     {
-      "name": "TemplateVNet",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployVNet.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "vnetPrefix": {
-            "value": "[parameters('vnetPrefix')]"
-          },
-          "subnet1Prefix": {
-            "value": "[parameters('containerCIDR')]"
-          },
-          "subnet2Prefix": {
-            "value": "[parameters('backCIDR')]"
-          },
-          "subnet3Prefix": {
-            "value": "[parameters('frontCIDR')]"
-          },
-          "subnet4Prefix": {
-            "value": "[parameters('manageCIDR')]"
-          },
-          "subnet5Prefix": {
-            "value": "[parameters('gatewayCIDR')]"
-          },
-          "remoteAccessACL": {
-            "value": "[parameters('remoteAccessACL')]"
-          }
-        }
-      }
-    },
-    {
       "name": "TemplatePrivateKeyVault",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
