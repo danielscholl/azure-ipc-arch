@@ -41,7 +41,7 @@
   },
   "variables": {
     "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "storageAccountName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+    "storageAccountName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '2')]",
     "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
   },
   "resources": [
@@ -71,21 +71,21 @@
         "networkAcls": {
           "bypass": "AzureServices",
           "virtualNetworkRules": [
-              {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetFe'))]",
-                  "action": "Allow",
-                  "state": "succeeded"
-              },
-              {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetBe'))]",
-                  "action": "Allow",
-                  "state": "succeeded"
-              },
-              {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAks'))]",
-                  "action": "Allow",
-                  "state": "succeeded"
-              }
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetFe'))]",
+              "action": "Allow",
+              "state": "succeeded"
+            },
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetBe'))]",
+              "action": "Allow",
+              "state": "succeeded"
+            },
+            {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAks'))]",
+              "action": "Allow",
+              "state": "succeeded"
+            }
           ],
           "ipRules": [],
           "defaultAction": "Deny"
