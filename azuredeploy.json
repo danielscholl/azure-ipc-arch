@@ -69,13 +69,19 @@
     "servicePrincipalClientId": {
       "type": "string",
       "metadata": {
-        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+        "description": "Application Client Id."
       }
     },
     "servicePrincipalClientKey": {
       "type": "string",
       "metadata": {
-        "description": "ObjectId for User allowed KeyVault Secret Access. (az ad user show --upn user@email.com)"
+        "description": "Application Client Key."
+      }
+    },
+    "servicePrincipalObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "ObjectId of Service Principal."
       }
     },
     "adminUserName": {
@@ -266,17 +272,17 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "builtInRoleType": {
+          "roleName": {
+            "value": "containerRegistry"
+          },
+          "roleType": {
             "value": "Owner"
           },
-          "principalId": {
-            "value": "[parameters('servicePrincipalClientId')]"
-          },
-          "scopeId": {
+          "resource": {
             "value": "[reference('TemplateKubernetes').outputs.containerRegistry.value.id]"
           },
-          "roleNameGuid": {
-            "value": "[guid(resourceGroup().id, 'containerRegistry')]"
+          "principal": {
+            "value": "[parameters('servicePrincipalObjectId')]"
           }
         }
       }
