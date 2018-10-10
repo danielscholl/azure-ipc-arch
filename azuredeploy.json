@@ -177,6 +177,23 @@
   "variables": {},
   "resources": [
     {
+      "name": "TemplateStorage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountType": {
+            "value": "Standard_LRS"
+          }
+        }
+      }
+    },
+    {
       "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -254,23 +271,6 @@
           },
           "subnetFe": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Name]"
-          }
-        }
-      }
-    },
-    {
-      "name": "TemplateStorage",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployStorageAccount.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "storageAccountType": {
-            "value": "Standard_LRS"
           }
         }
       }
