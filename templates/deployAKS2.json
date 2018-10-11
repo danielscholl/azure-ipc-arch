@@ -74,7 +74,7 @@
   "variables": {
     "registryName": "[concat('registry-', parameters('random'))]",
     "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
-    "clusterName": "[concat('aks-', parameters('random'))]",
+    "clusterName": "[concat('aks', parameters('random'), 'registry')]",
     "clusterId": "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]",
     "linuxProfile": {
       "adminUsername": "[parameters('adminUserName')]",
