@@ -141,14 +141,14 @@
       "metadata": {
         "description": "VM Size of Kubernetes Agents"
       },
-      "defaultValue": "Standard_B2ms"
+      "defaultValue": "Standard_D2_v3"
     },
     "bastionSize": {
       "type": "string",
       "metadata": {
         "description": "Virtual Machine Size"
       },
-      "defaultValue": "Standard_B1ms"
+      "defaultValue": "Standard_B1s"
     },
     "frontendLoadBalanceIP": {
       "type": "string",
@@ -177,7 +177,7 @@
         "description": "Backend Virtual Machine Size."
       },
       "type": "string",
-      "defaultValue": "Standard_B2s"
+      "defaultValue": "Standard_DS2_v2"
     },
     "backendServerCount": {
       "type": "int",
@@ -200,7 +200,7 @@
         "description": "Frontend Virtual Machine Size."
       },
       "type": "string",
-      "defaultValue": "Standard_B2s"
+      "defaultValue": "Standard_DS2_v2"
     },
     "frontendServerCount": {
       "type": "int",
@@ -215,7 +215,8 @@
     "defaultGroup": "[concat(parameters('initials'), '-common')]",
     "aksGroup": "[concat(parameters('initials'), '-cluster')]",
     "manageGroup": "[concat(parameters('initials'), '-manage')]",
-    "iaasGroup": "[concat(parameters('initials'), '-iaas')]"
+    "iaasGroup": "[concat(parameters('initials'), '-iaas')]",
+    "paasGroup": "[concat(parameters('initials'), '-paas')]"
   },
   "resources": [
     {
@@ -244,6 +245,13 @@
       "apiVersion": "2018-05-01",
       "location": "[parameters('location')]",
       "name": "[variables('iaasGroup')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[variables('paasGroup')]",
       "properties": {}
     },
     {
@@ -714,6 +722,53 @@
               },
               "secretName": "sshPublicKey"
             }
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateSqlDatabase",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "resourceGroup": "[variables('paasGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deploySqlDatabase.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
+          "sqlAdministratorLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbUserName"
+            }
+          },
+          "sqlAdministratorPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[reference('TemplatePrivateKeyVault').outputs.keyVault.value.id]"
+              },
+              "secretName": "dbPasword"
+            }
+          },
+          "subnetAksId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "subnetBeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "subnetFeId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
           }
         }
       }

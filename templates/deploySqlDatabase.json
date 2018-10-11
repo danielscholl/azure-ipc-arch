@@ -49,8 +49,7 @@
     }
   },
   "variables": {
-    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "sqlserverName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]"
+    "sqlserverName": "[concat(parameters('prefix'), uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
