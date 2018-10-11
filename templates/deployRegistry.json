@@ -37,19 +37,6 @@
         "properties": {
           "adminUserEnabled": false
         }
-      },
-      {
-        "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
-        "apiVersion": "2017-05-01",
-        "name": "[concat(variables('registryName'), '/Microsoft.Authorization/', guid(concat(resourceGroup().id), variables('ContributorRole')))]",
-        "dependsOn": [
-          "[resourceId('Microsoft.Network/virtualNetworks', variables('registryName'))]"
-        ],
-        "properties": {
-          "roleDefinitionId": "[variables('ContributorRole')]",
-          "principalId": "[parameters('servicePrincipalId')]",
-          "mode":"Incremental"
-        }
       }
     ],
     "outputs": {
