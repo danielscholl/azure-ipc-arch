@@ -2,6 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
     "workspaceRegion": {
       "type": "string",
       "metadata": {
@@ -17,8 +25,7 @@
     }
   },
   "variables": {
-    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "workspaceName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
+    "workspaceName": "[concat(parameters('prefix'), '-analytics')]",
     "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]",
     "batch": {
       "solutions": [

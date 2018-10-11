@@ -255,6 +255,27 @@
       "properties": {}
     },
     {
+      "name": "TemplateLogAnalytics",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('defaultGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployLogAnalytics.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          }
+        }
+      }
+    },
+    {
       "name": "TemplateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
