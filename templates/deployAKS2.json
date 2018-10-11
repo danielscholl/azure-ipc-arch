@@ -72,8 +72,6 @@
     }
   },
   "variables": {
-    "registryName": "[concat('registry', parameters('prefix'))]",
-    "registryId": "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]",
     "clusterName": "[concat('aks-', parameters('prefix'))]",
     "clusterId": "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]",
     "linuxProfile": {
@@ -106,29 +104,11 @@
   },
   "resources": [
     {
-      "comments": "## Container Registry ##",
-      "name": "[variables('registryName')]",
-      "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2017-10-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [],
-      "sku": {
-        "name": "Standard",
-        "tier": "Standard"
-      },
-      "properties": {
-        "adminUserEnabled": false
-      }
-    },
-    {
       "comments": "## Managed Kubernetes ##",
       "name": "[variables('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2018-03-31",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
-      ],
       "properties": {
         "kubernetesVersion": "[variables('managerProfile').version]",
         "enableRBAC": "[variables('authProfile').rbac]",
@@ -175,13 +155,6 @@
     }
   ],
   "outputs": {
-    "containerRegistry": {
-      "type": "object",
-      "value": {
-        "id": "[variables('registryId')]",
-        "name": "[variables('registryName')]"
-      }
-    },
     "controlPlane": {
       "type": "object",
       "value": {

@@ -325,6 +325,30 @@
       }
     },
     {
+      "name": "TemplateRegistry",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('aksGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('aksGroup'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployRegistry.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('random')]"
+          },
+          "servicePrincipalId": {
+            "value": "[parameters('servicePrincipalObjectId')]"
+          }          
+        }
+      }
+    },
+    {
       "name": "TemplateKubernetes",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
