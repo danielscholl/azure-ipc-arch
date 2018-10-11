@@ -10,6 +10,13 @@
       "minLength": 2,
       "maxLength": 5
     },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "defaultValue": "eastus"
+    },
     "random": {
       "type": "int",
       "metadata": {
@@ -138,13 +145,32 @@
     }
   },
   "variables": {
-    "aksGroup": "[concat(parameters('initials'), '-arch-aks')]"
+    "defaultGroup": "[concat(parameters('initials'), '-arch')]",
+    "aksGroup": "[concat(parameters('initials'), '-arch-cluster')]"
   },
   "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[variables('defaultGroup')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[variables('aksGroup')]",
+      "properties": {}
+    },
     {
       "name": "TemplateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('defaultGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -162,6 +188,10 @@
       "name": "TemplateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('defaultGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -197,7 +227,9 @@
       "name": "TemplatePrivateKeyVault",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('defaultGroup')]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
         "TemplateVNet"
       ],
       "properties": {
@@ -247,7 +279,9 @@
       "name": "TemplatePrivateStorage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('defaultGroup')]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
         "TemplateVNet"
       ],
       "properties": {
@@ -279,7 +313,9 @@
       "name": "TemplateKubernetes",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
+      "resourceGroup": "[variables('aksGroup')]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('aksGroup'))]",
         "TemplateVNet",
         "TemplatePrivateKeyVault"
       ],

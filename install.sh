@@ -112,8 +112,8 @@ function CreateSSHKeys() {
 ###############################
 
 # tput setaf 2; echo 'Creating Resource Group...' ; tput sgr0
-RESOURCE_GROUP="$INITIALS-arch"
-CreateResourceGroup $RESOURCE_GROUP $AZURE_LOCATION
+# RESOURCE_GROUP="$INITIALS-arch"
+# CreateResourceGroup $RESOURCE_GROUP $AZURE_LOCATION
 
 tput setaf 2; echo 'Creating Service Principal...' ; tput sgr0
 PrincipalName="$INITIALS-Principal"
@@ -125,8 +125,8 @@ LINUX_USER=(${AZURE_USER//@/ })
 CreateSSHKeys $AZURE_USER
 
 tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
-az group deployment create --template-file azuredeploy.json  \
-  --resource-group $RESOURCE_GROUP \
+az deployment create --template-file azuredeploy.json  \
+  --location $AZURE_LOCATION \
   --parameters azuredeploy.parameters.json \
   --parameters servicePrincipalClientId=$CLIENT_ID \
   --parameters servicePrincipalClientKey=$CLIENT_SECRET \
