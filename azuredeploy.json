@@ -219,6 +219,9 @@
           },
           "remoteAccessACL": {
             "value": "[parameters('remoteAccessACL')]"
+          },
+          "servicePrincipalObjectId": {
+            "value": "[parameters('servicePrincipalObjectId')]"
           }
         }
       }
