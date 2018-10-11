@@ -145,8 +145,8 @@
     }
   },
   "variables": {
-    "defaultGroup": "[concat(parameters('initials'), '-arch')]",
-    "aksGroup": "[concat(parameters('initials'), '-arch-cluster')]"
+    "defaultGroup": "[concat(parameters('initials'), '-common')]",
+    "aksGroup": "[concat(parameters('initials'), '-cluster')]"
   },
   "resources": [
     {
@@ -178,6 +178,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
           "storageAccountType": {
             "value": "Standard_LRS"
           }
@@ -199,6 +202,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
           "vnetPrefix": {
             "value": "[parameters('vnetPrefix')]"
           },
@@ -242,6 +248,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
           "servicePrincipalClientId": {
             "value": "[parameters('servicePrincipalClientId')]"
           },
@@ -294,6 +303,9 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
           "storageAccountType": {
             "value": "Standard_LRS"
           },
@@ -329,7 +341,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "random": {
+          "prefix": {
             "value": "[parameters('random')]"
           },
           "subnetId": {

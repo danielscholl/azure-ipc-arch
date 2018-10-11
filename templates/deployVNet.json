@@ -2,6 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
     "vnetPrefix": {
       "type": "string",
       "metadata": {
@@ -53,7 +61,7 @@
     }
   },
   "variables": {
-    "VNetName": "[concat(resourceGroup().name, '-vnet')]",
+    "VNetName": "[concat(parameters('prefix'), '-vnet')]",
     "VNetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('VNetName'))]",
     "Subnet1Name": "containertier",
     "SubNet1Id": "[concat(variables('VNetId'), '/subnets/', variables('Subnet1Name'))]",

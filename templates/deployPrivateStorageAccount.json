@@ -2,6 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
     "storageAccountType": {
       "type": "string",
       "metadata": {
@@ -40,8 +48,7 @@
     }
   },
   "variables": {
-    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "storageAccountName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '2')]",
+    "storageAccountName": "[concat(parameters('prefix'), uniqueString(resourceGroup().id), '2')]",
     "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
   },
   "resources": [
