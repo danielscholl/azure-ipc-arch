@@ -511,7 +511,7 @@
         },
         "parameters": {
           "prefix": {
-            "value": "be"
+            "value": "[concat(parameters('Initials'), '-be')]"
           },
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
@@ -538,7 +538,7 @@
         },
         "parameters": {
           "prefix": {
-            "value": "fe"
+            "value": "[concat(parameters('Initials'), '-fe')]"
           },
           "subnetId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"

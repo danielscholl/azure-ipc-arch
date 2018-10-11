@@ -22,7 +22,7 @@
     }
   },
   "variables": {
-    "LBName": "[concat(resourceGroup().name, '-', parameters('prefix'), '-lb')]",
+    "LBName": "[concat(parameters('prefix'), '-lb')]",
     "LBId": "[resourceId('Microsoft.Network/loadBalancers', variables('LBName'))]"
   },
   "resources": [
