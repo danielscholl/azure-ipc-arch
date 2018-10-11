@@ -526,6 +526,7 @@
       "name": "TemplateLoadBalancerFE",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2018-08-01",
+      "resourceGroup": "[variables('iaasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
         "TemplateVNet"
