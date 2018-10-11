@@ -801,7 +801,7 @@
     {
       "name": "TemplateWebApp",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('paasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
@@ -826,7 +826,7 @@
     {
       "name": "TemplateFuncApp",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('paasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
