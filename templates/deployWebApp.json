@@ -2,6 +2,14 @@
   "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Small unique string."
+      },
+      "minLength": 2,
+      "maxLength": 5
+    },
     "vnetName": {
       "type": "string",
       "minLength": 1,
@@ -11,7 +19,7 @@
     }
   },
   "variables": {
-    "hostingPlanName": "[concat(resourceGroup().name, '-appplan')]",
+    "hostingPlanName": "[concat(parameters('prefix'), '-appplan')]",
     "siteName": "[concat(variables('hostingPlanName'), '-web')]"
   },
   "resources": [

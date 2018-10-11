@@ -576,7 +576,7 @@
     {
       "name": "TemplateLoadBalancerBE",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('iaasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
@@ -604,7 +604,7 @@
     {
       "name": "TemplateLoadBalancerFE",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('iaasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
@@ -632,7 +632,7 @@
     {
       "name": "TemplateLinuxVMasBE",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('iaasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
@@ -693,7 +693,7 @@
     {
       "name": "TemplateLinuxVMasFE",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('iaasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
@@ -754,7 +754,7 @@
     {
       "name": "TemplateSqlDatabase",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2017-05-10",
       "resourceGroup": "[variables('paasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
@@ -794,6 +794,63 @@
           },
           "subnetFeId": {
             "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateWebApp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "resourceGroup": "[variables('paasGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
+        "TemplateVpnGateway"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployWebApp.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateFuncApp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "resourceGroup": "[variables('paasGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
+        "TemplatePrivateStorage",
+        "TemplateVpnGateway"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployFuncApp.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "[parameters('initials')]"
+          },
+          "vnetName": {
+            "value": "[reference('TemplateVNet').outputs.virtualNetwork.value.name]"
+          },
+          "storageAccountName": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.name]"
+          },
+          "storageAccountId": {
+            "value": "[reference('TemplateStorage').outputs.storageAccount.value.id]"
           }
         }
       }
