@@ -61,7 +61,7 @@
       "location": "[parameters('workspaceRegion')]",
       "properties": {
         "sku": {
-          "name": "Free"
+          "name": "pergb2018"
         },
         "features": {
           "searchVersion": "1"
