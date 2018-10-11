@@ -61,7 +61,7 @@
       "location": "[parameters('workspaceRegion')]",
       "properties": {
         "sku": {
-          "name": "pergb2018"
+          "name": "Standard"
         },
         "features": {
           "searchVersion": "1"
