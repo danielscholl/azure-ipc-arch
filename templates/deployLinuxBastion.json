@@ -70,7 +70,7 @@
       "comments": "## Public IP Address ##",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('PublicIpName')]",
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Public IP Address - JumpServer"
@@ -83,7 +83,7 @@
       "comments": "## Network Interface ##",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('NicName')]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Network Interface - JumpServer"
@@ -112,7 +112,7 @@
       "comments": "## Virtual Machine ##",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2018-06-01",
       "location": "[resourceGroup().location]",
       "tags": {
         "displayName": "Virtual Machine - Bastion"
