@@ -46,7 +46,7 @@
           "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
         ],
         "properties": {
-          "roleDefinitionId": "[variables('ContributorRole')]",
+          "roleDefinitionId": "[variables('ReaderRole')]",
           "principalId": "[parameters('servicePrincipalId')]",
           "mode":"Incremental"
         }

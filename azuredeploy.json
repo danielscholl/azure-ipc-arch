@@ -149,12 +149,27 @@
         "description": "Virtual Machine Size"
       },
       "defaultValue": "Standard_B1ms"
+    },
+    "frontendLoadBalanceIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Static IP Address for the Load Balancer."
+      },
+      "defaultValue": "10.100.17.4"
+    },
+    "backendLoadBalanceIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Static IP Address for the Load Balancer."
+      },
+      "defaultValue": "10.100.16.4"
     }
   },
   "variables": {
     "defaultGroup": "[concat(parameters('initials'), '-common')]",
     "aksGroup": "[concat(parameters('initials'), '-cluster')]",
-    "manageGroup": "[concat(parameters('initials'), '-manage')]"
+    "manageGroup": "[concat(parameters('initials'), '-manage')]",
+    "iaasGroup": "[concat(parameters('initials'), '-iaas')]"
   },
   "resources": [
     {
@@ -176,6 +191,13 @@
       "apiVersion": "2018-05-01",
       "location": "[parameters('location')]",
       "name": "[variables('manageGroup')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('location')]",
+      "name": "[variables('iaasGroup')]",
       "properties": {}
     },
     {
@@ -468,6 +490,61 @@
               },
               "secretName": "sshPublicKey"
             }
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateLoadBalancerBE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "resourceGroup": "[variables('iaasGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "be"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet2Id]"
+          },
+          "staticIpAddress": {
+            "value": "[parameters('backendLoadBalanceIP')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "TemplateLoadBalancerFE",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('iaasGroup'))]",
+        "TemplateVNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('templateURL'), 'deployLoadBalancer.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "prefix": {
+            "value": "fe"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet3Id]"
+          },
+          "staticIpAddress": {
+            "value": "[parameters('frontendLoadBalanceIP')]"
           }
         }
       }
