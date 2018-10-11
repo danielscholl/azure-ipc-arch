@@ -23,6 +23,11 @@ if [ -z $AZURE_LOCATION ]; then
   AZURE_LOCATION="eastus"
 fi
 
+if [ -z $UNIQUE ]; then
+  UNIQUE=$(shuf -i 100-999 -n 1)
+  echo "export UNQIUE=${UNIQUE}" >> .envrc
+fi
+
 
 
 ###############################
@@ -101,10 +106,10 @@ function CreateSSHKeys() {
     ssh-keygen -t rsa -b 2048 -C $1 -f id_rsa && cd ..
   fi 
 
- #read -r _result < ./.ssh/id_rsa.pub
  _result=`cat ./.ssh/id_rsa.pub`
- echo $_result
+ #echo $_result
 }
+
 
 
 ###############################
@@ -125,12 +130,14 @@ LINUX_USER=(${AZURE_USER//@/ })
 CreateSSHKeys $AZURE_USER
 
 tput setaf 2; echo 'Deploying ARM Template...' ; tput sgr0
+if [ -f ./params.json ]; then PARAMS="params.json"; else PARAMS="azuredeploy.parameters.json"; fi
+
 az deployment create --template-file azuredeploy.json  \
   --location $AZURE_LOCATION \
-  --parameters azuredeploy.parameters.json \
+  --parameters $PARAMS \
   --parameters servicePrincipalClientId=$CLIENT_ID \
   --parameters servicePrincipalClientKey=$CLIENT_SECRET \
   --parameters servicePrincipalObjectId=$OBJECT_ID \
-  --parameters initials=$INITIALS --parameters random=$(shuf -i 100-999 -n 1) \
+  --parameters initials=$INITIALS --parameters random=$UNIQUE \
   --parameters adminUserName=$LINUX_USER \
   --parameters dbUserName=$LINUX_USER
