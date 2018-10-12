@@ -22,32 +22,61 @@
         "Southeast Asia",
         "Australia Southeast"
       ]
+    },
+    "serviceTier": {
+      "type": "string",
+      "defaultValue": "free",
+      "allowedValues": [
+        "free",
+        "standalone",
+        "perNode"
+      ],
+      "metadata": {
+        "description": "Log Analytics service tier: Free, Standalone, or PerNode"
+      }
+    },
+    "dataRetention": {
+      "type": "int",
+      "defaultValue": 7,
+      "minValue": 7,
+      "maxValue": 730,
+      "metadata": {
+        "description": "Log Analytics number of days of retention. Free plans can only have 7 days, Standalone and OMS plans include 30 days for free"
+      }
     }
   },
   "variables": {
-    "workspaceName": "[concat(parameters('prefix'), '-analytics')]",
-    "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]",
+    "logAnalyticsConfiguration": {
+      "workspaceName": "[concat(parameters('prefix'), '-analytics')]",
+      "serviceTier": "[parameters('serviceTier')]",
+      "dataRetention": "[parameters('dataRetention')]"
+    },
+    "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsConfiguration').workspaceName)]",
     "batch": {
       "solutions": [
         {
-          "name": "[concat('Security', '(', variables('workspaceName'), ')')]",
+          "name": "[concat('Security', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
           "marketplaceName": "Security"
         },
         {
-          "name": "[concat('AgentHealthAssessment', '(', variables('workspaceName'), ')')]",
+          "name": "[concat('AgentHealthAssessment', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
           "marketplaceName": "AgentHealthAssessment"
         },
         {
-          "name": "[concat('ChangeTracking', '(', variables('workspaceName'), ')')]",
+          "name": "[concat('ChangeTracking', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
           "marketplaceName": "ChangeTracking"
         },
         {
-          "name": "[concat('Updates', '(', variables('workspaceName'), ')')]",
+          "name": "[concat('Updates', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
           "marketplaceName": "Updates"
         },
         {
-          "name": "[concat('AzureActivity', '(', variables('workspaceName'), ')')]",
+          "name": "[concat('AzureActivity', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
           "marketplaceName": "AzureActivity"
+        },
+        {
+          "name": "[concat('Containers', '(', variables('logAnalyticsConfiguration').workspaceName, ')')]",
+          "marketplaceName": "Containers"
         }
       ]
     }
@@ -57,12 +86,13 @@
       "comments": "## Log Analytics Workspace ##",
       "apiVersion": "2015-11-01-preview",
       "type": "Microsoft.OperationalInsights/workspaces",
-      "name": "[variables('workspaceName')]",
+      "name": "[variables('logAnalyticsConfiguration').workspaceName]",
       "location": "[parameters('workspaceRegion')]",
       "properties": {
         "sku": {
-          "name": "Standard"
+          "name": "[variables('logAnalyticsConfiguration').serviceTier]"
         },
+        "retention": "[variables('logAnalyticsConfiguration').dataRetention]",
         "features": {
           "searchVersion": "1"
         }
@@ -210,7 +240,8 @@
       "type": "object",
       "value": {
         "id": "[variables('workspaceId')]",
-        "name": "[variables('workspaceName')]"
+        "name": "[variables('logAnalyticsConfiguration').workspaceName]",
+        "key": "[listKeys(variables('workspaceId'), '2015-11-01-preview').primarySharedKey]"
       }
     }
   }
