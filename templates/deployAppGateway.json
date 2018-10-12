@@ -18,7 +18,7 @@
     }
   },
   "variables": {
-    "gatewayName": "[concat(parameters('prefix'), '-gateway')]",
+    "gatewayName": "[concat(parameters('prefix'), '-appgateway')]",
     "gatewayIpName": "[concat(variables('gatewayName'), '-ip')]",
     "gatewayIpId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayIpName'))]"
   },

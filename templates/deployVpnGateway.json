@@ -25,7 +25,7 @@
     }
   },
   "variables": {
-    "gatewayName": "[concat(parameters('prefix'), '-gateway')]",
+    "gatewayName": "[concat(parameters('prefix'), '-vpngateway')]",
     "gatewayIpName": "[concat(variables('gatewayName'), '-ip')]"
   },
   "resources": [
