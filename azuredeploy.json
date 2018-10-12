@@ -880,9 +880,9 @@
       "name": "TemplateAppGateway",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2017-05-10",
-      "resourceGroup": "[variables('defaultGroup')]",
+      "resourceGroup": "[variables('paasGroup')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups/', variables('defaultGroup'))]",
+        "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
         "TemplateVNet"
       ],
       "properties": {

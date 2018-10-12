@@ -25,11 +25,12 @@
     },
     "serviceTier": {
       "type": "string",
-      "defaultValue": "free",
+      "defaultValue": "pergb2018",
       "allowedValues": [
         "free",
         "standalone",
-        "perNode"
+        "perNode",
+        "pergb2018"
       ],
       "metadata": {
         "description": "Log Analytics service tier: Free, Standalone, or PerNode"
