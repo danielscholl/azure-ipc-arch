@@ -78,10 +78,14 @@ function CreateServicePrincipal() {
       OBJECT_ID=$(az ad sp list \
         --display-name $PrincipalName \
         --query [].objectId -otsv)
+      UNIQUE=$(shuf -i 100-999 -n 1)
+  
 
       echo "" >> .envrc
       echo "export CLIENT_ID=${CLIENT_ID}" >> .envrc
       echo "export CLIENT_SECRET=${CLIENT_SECRET}" >> .envrc
+      echo "export OBJECT_ID=${OBJECT_ID}" >> .envrc
+      echo "export UNQIUE=${UNIQUE}" >> .envrc
     else
         tput setaf 3;  echo "Service Principal $1 already exists."; tput sgr0
         if [ -z $CLIENT_ID ]; then
@@ -91,6 +95,16 @@ function CreateServicePrincipal() {
 
         if [ -z $CLIENT_SECRET ]; then
           tput setaf 1; echo 'ERROR: Principal exists but CLIENT_SECRET not provided' ; tput sgr0
+          exit 1;
+        fi
+
+        if [ -z $OBJECT_ID ]; then
+          tput setaf 1; echo 'ERROR: Principal exists but OBJECT_ID not provided' ; tput sgr0
+          exit 1;
+        fi
+
+        if [ -z $UNIQUE ]; then
+          tput setaf 1; echo 'ERROR: UNIQUE not provided' ; tput sgr0
           exit 1;
         fi
     fi
