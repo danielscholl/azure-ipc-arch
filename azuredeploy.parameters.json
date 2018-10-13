@@ -6,25 +6,43 @@
       "value": "ipc"
     },
     "vnetPrefix": {
-      "value": "10.0.0.0/16"
+      "value": "10.100.0.0/16"
     },
     "containerCIDR": {
-      "value": "10.0.0.0/20"
+      "value": "10.100.0.0/20"
     },
     "frontCIDR": {
-      "value": "10.0.17.0/24"
+      "value": "10.100.17.0/24"
     },
     "backCIDR": {
-      "value": "10.0.16.0/24"
+      "value": "10.100.16.0/24"
     },
     "manageCIDR": {
-      "value": "10.0.18.0/24"
+      "value": "10.100.18.0/24"
     },
     "gatewayCIDR": {
-      "value": "10.0.20.0/28"
+      "value": "10.100.20.0/28"
+    },
+    "agentSize": {
+      "value": "Standard_DS2_v2"
+    },
+    "agentCount": {
+      "value": 1
     },
     "bastionSize": {
+      "value": "Standard_B1s"
+    },
+    "backendServerSize": {
       "value": "Standard_B1ms"
+    },
+    "backendServerCount": {
+      "value": "2"
+    },
+    "frontendServerSize": {
+      "value": "Standard_B1ms"
+    },
+    "frontendServerCount": {
+      "value": "2"
     }
   }
 }
