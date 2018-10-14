@@ -36,13 +36,13 @@
       "value": "Standard_B1ms"
     },
     "backendServerCount": {
-      "value": "2"
+      "value": 2
     },
     "frontendServerSize": {
       "value": "Standard_B1ms"
     },
     "frontendServerCount": {
-      "value": "2"
+      "value": 2
     }
   }
 }
