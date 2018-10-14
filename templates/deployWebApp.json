@@ -35,7 +35,6 @@
         "name": "S1",
         "capacity": 1
       },
-      
       "properties": {
         "name": "[variables('hostingPlanName')]"
       }
@@ -43,7 +42,7 @@
     {
       "comments": "## Web Site ##",
       "name": "[variables('siteName')]",
-      "type": "Microsoft.Web/sites",      
+      "type": "Microsoft.Web/sites",
       "apiVersion": "2018-02-01",
       "location": "[resourceGroup().location]",
       "kind": "app",
@@ -74,7 +73,8 @@
     "web": {
       "type": "object",
       "value": {
-        "uri": "[reference(concat('Microsoft.Web/sites/', variables('siteName'))).hostnames[0]]"
+        "uri": "[reference(concat('Microsoft.Web/sites/', variables('siteName'))).hostnames[0]]",
+        "name": "[variables('siteName')]"
       }
     }
   }
