@@ -23,12 +23,6 @@ if [ -z $AZURE_LOCATION ]; then
   AZURE_LOCATION="eastus"
 fi
 
-if [ -z $UNIQUE ]; then
-  UNIQUE=$(shuf -i 100-999 -n 1)
-  echo "export UNQIUE=${UNIQUE}" >> .envrc
-fi
-
-
 
 ###############################
 ## FUNCTIONS                 ##
