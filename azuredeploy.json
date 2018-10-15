@@ -340,7 +340,10 @@
             "value": "[parameters('manageCIDR')]"
           },
           "subnet5Prefix": {
-            "value": "[parameters('gatewayCIDR')]"
+            "value": "[parameters('vpngatewayCIDR')]"
+          },
+          "subnet6Prefix": {
+            "value": "[parameters('appgatewayCIDR')]"
           },
           "remoteAccessACL": {
             "value": "[parameters('remoteAccessACL')]"
