@@ -24,15 +24,15 @@
     }
   },
   "variables": {
-    "gatewayName": "[concat(parameters('prefix'), '-appgateway')]",
-    "gatewayId": "[resourceId('Microsoft.Network/applicationGateways', variables('gatewayName'))]",
-    "gatewayIpName": "[concat(variables('gatewayName'), '-ip')]",
-    "gatewayIpId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('gatewayIpName'))]"
+    "applicationGatewayName": "[concat(parameters('prefix'), '-appgateway')]",
+    "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName'))]",
+    "publicIpName": "[concat(variables('applicationGatewayName'), '-ip')]",
+    "publicIpId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
   },
   "resources": [
     {
       "comments": "## VPN Gateway Public IP ##",
-      "name": "[variables('gatewayIpName')]",
+      "name": "[variables('publicIpName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
@@ -42,9 +42,12 @@
     },
     {
       "apiVersion": "2017-06-01",
-      "name": "[variables('gatewayName')]",
+      "name": "[variables('applicationGatewayName')]",
       "type": "Microsoft.Network/applicationGateways",
-      "location": "[resourceGroup().location]",
+      "location": "[resourceGroup().name]",
+      "dependsOn": [
+        "[variables('publicIpName')]"
+      ],
       "properties": {
         "sku": {
           "name": "Standard_Small",
@@ -63,10 +66,10 @@
         ],
         "frontendIPConfigurations": [
           {
-            "name": "appGatewayFrontendPublicIP",
+            "name": "appGatewayFrontendIP",
             "properties": {
               "PublicIPAddress": {
-                "id": "[variables('gatewayIpId')]"
+                "id": "[variables('publicIpId')]"
               }
             }
           }
@@ -75,7 +78,7 @@
           {
             "name": "appGatewayFrontendPort",
             "properties": {
-              "Port": "80"
+              "Port": 80
             }
           }
         ],
@@ -95,16 +98,9 @@
           {
             "name": "appGatewayBackendHttpSettings",
             "properties": {
-              "provisioningState": "Succeeded",
-              "port": 80,
-              "protocol": "Http",
-              "cookieBasedAffinity": "Disabled",
-              "pickHostNameFromBackendAddress": true,
-              "requestTimeout": 30,
-              "ProbeEnabled": "true",
-              "Probe": {
-                "id": "[concat(variables('gatewayId'), '/probes/probe-web')]"
-              }
+              "Port": 80,
+              "Protocol": "Http",
+              "CookieBasedAffinity": "Disabled"
             }
           }
         ],
@@ -112,46 +108,37 @@
           {
             "name": "appGatewayHttpListener",
             "properties": {
-              "provisioningState": "Succeeded",
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('gatewayId'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
+              "FrontendIPConfiguration": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
               },
-              "frontendPort": {
-                "id": "[concat(variables('gatewayId'), '/frontendPorts/appGatewayFrontendPort80')]"
+              "FrontendPort": {
+                "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/appGatewayFrontendPort')]"
               },
-              "protocol": "Http",
-              "requireServerNameIndication": false
-            }
-          }
-        ],
-        "probes": [
-          {
-            "Name": "probe-web",
-            "properties": {
               "Protocol": "Http",
-              "Path": "/index.html",
-              "Interval": 30,
-              "Timeout": 10,
-              "UnhealthyThreshold": 3,
-              "MinServers": 0,
-              "PickHostNameFromBackendHttpSettings": true
+              "SslCertificate": null
             }
           }
         ],
         "requestRoutingRules": [
           {
-            "name": "rule1",
+            "Name": "rule1",
             "properties": {
-              "provisioningState": "Succeeded",
-              "ruleType": "Basic",
+              "RuleType": "Basic",
               "httpListener": {
-                "id": "[concat(variables('gatewayId'), '/httpListeners/appGatewayHttpListener')]"
+                "id": "[concat(variables('applicationGatewayID'), '/httpListeners/appGatewayHttpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
               }
             }
           }
         ]
       }
     }
+
   ],
   "outputs": {}
 }
