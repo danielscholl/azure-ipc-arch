@@ -145,13 +145,7 @@
               "provisioningState": "Succeeded",
               "ruleType": "Basic",
               "httpListener": {
-                "id": "[concat(variables('gatewayId'), '/httpListener/appGatewayHttpListener')]"
-              },
-              "backendAddressPool": {
-                "id": "[concat(variables('gatewayId'), '/backendAddressPool/appGatewayBackendPool')]"
-              },
-              "backendHttpSettings": {
-                "id": "[concat(variables('gatewayId'), '/backendHttpSettings/appGatewayBackendHttpSettings')]"
+                "id": "[concat(variables('gatewayId'), '/httpListeners/appGatewayHttpListener')]"
               }
             }
           }
