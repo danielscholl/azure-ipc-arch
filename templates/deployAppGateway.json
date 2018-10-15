@@ -79,18 +79,48 @@
             }
           }
         ],
+        "backendAddressPools": [
+          {
+            "name": "appGatewayBackendPool",
+            "properties": {
+              "BackendAddresses": [
+                {
+                  "IpAddress": "[concat(parameters('siteName'), '.azurewebsites.net')]"
+                }
+              ]
+            }
+          }
+        ],
+        "backendHttpSettingsCollection": [
+          {
+            "name": "appGatewayBackendHttpSettings",
+            "properties": {
+              "provisioningState": "Succeeded",
+              "port": 80,
+              "protocol": "Http",
+              "cookieBasedAffinity": "Disabled",
+              "pickHostNameFromBackendAddress": true,
+              "requestTimeout": 30,
+              "ProbeEnabled": "true",
+              "Probe": {
+                "id": "[concat(variables('gatewayId'), '/probes/probe-web')]"
+              }
+            }
+          }
+        ],
         "httpListeners": [
           {
             "name": "appGatewayHttpListener",
             "properties": {
-              "FrontendIPConfiguration": {
-                "Id": "[concat(variables('gatewayId'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
+              "provisioningState": "Succeeded",
+              "frontendIPConfiguration": {
+                "id": "[concat(variables('gatewayId'), '/frontendIPConfigurations/appGatewayFrontendPublicIP')]"
               },
-              "FrontendPort": {
-                "Id": "[concat(variables('gatewayId'), '/frontendPorts/appGatewayFrontendPort80')]"
+              "frontendPort": {
+                "id": "[concat(variables('gatewayId'), '/frontendPorts/appGatewayFrontendPort80')]"
               },
-              "Protocol": "Http",
-              "SslCertificate": null
+              "protocol": "Http",
+              "requireServerNameIndication": false
             }
           }
         ],
@@ -108,34 +138,24 @@
             }
           }
         ],
-        "backendHttpSettingsCollection": [
+        "requestRoutingRules": [
           {
-            "name": "appGatewayBackendHttpSettings",
+            "name": "rule1",
             "properties": {
-              "Port": "80",
-              "Protocol": "Http",
-              "CookieBasedAffinity": "Disabled",
-              "PickHostNameFromBackendAddress": true,
-              "ProbeEnabled": "true",
-              "Probe": {
-                "id": "[concat(variables('gatewayId'), '/probes/probe-web')]"
+              "provisioningState": "Succeeded",
+              "ruleType": "Basic",
+              "httpListener": {
+                "id": "[concat(variables('gatewayId'), '/httpListener/appGatewayHttpListener')]"
+              },
+              "backendAddressPool": {
+                "id": "[concat(variables('gatewayId'), '/backendAddressPool/appGatewayBackendPool')]"
+              },
+              "backendHttpSettings": {
+                "id": "[concat(variables('gatewayId'), '/backendHttpSettings/appGatewayBackendHttpSettings')]"
               }
             }
           }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "pool-web",
-            "properties": {
-              "BackendAddresses": [
-                {
-                  "IpAddress": "[concat(parameters('siteName'), '.azurewebsites.net')]"
-                }
-              ]
-            }
-          }
-        ],
-        "requestRoutingRules": []
+        ]
       }
     }
   ],
