@@ -883,7 +883,8 @@
       "resourceGroup": "[variables('paasGroup')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups/', variables('paasGroup'))]",
-        "TemplateVNet"
+        "TemplateVNet",
+        "TemplateWebApp"
       ],
       "properties": {
         "mode": "Incremental",
@@ -894,6 +895,12 @@
         "parameters": {
           "prefix": {
             "value": "[parameters('initials')]"
+          },
+          "subnetId": {
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet5Id]"
+          },
+          "siteName": {
+            "value": "[reference('TemplateWebApp').outputs.web.value.name]"
           }
         }
       }
