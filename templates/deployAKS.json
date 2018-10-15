@@ -2,17 +2,43 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vnetName": {
-      "type": "string",
+    "prefix": {
+      "type": "int",
       "metadata": {
-        "description": "Virtual Network Name to associate VM to."
+        "description": "3 Digit Random Integer"
+      },
+      "minValue": 100,
+      "maxValue": 999
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "defaultValue": "1.11.3",
+      "allowedValues": [
+        "1.11.3",
+        "1.10.8",
+        "1.9.10",
+        "1.8.15",
+        "1.7.16"
+      ],
+      "metadata": {
+        "description": "The version of Kubernetes."
       }
     },
-    "subnetName": {
+    "agentCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The number of nodes for the cluster."
+      },
+      "minValue": 1,
+      "maxValue": 50
+    },
+    "agentVMSize": {
       "type": "string",
       "metadata": {
-        "description": "Subnet Name to associate VM to."
-      }
+        "description": "The size of the Virtual Machine."
+      },
+      "defaultValue": "Standard_B2ms"
     },
     "subnetId": {
       "type": "string",
@@ -43,90 +69,59 @@
         "description": "The Service Principal Client Secret."
       },
       "type": "securestring"
-    },
-    "agentCount": {
-      "type": "int",
-      "defaultValue": 1,
-      "metadata": {
-        "description": "The number of nodes for the cluster."
-      },
-      "minValue": 1,
-      "maxValue": 50
-    },
-    "agentVMSize": {
-      "type": "string",
-      "metadata": {
-        "description": "The size of the Virtual Machine."
-      },
-      "defaultValue": "Standard_B2ms"
-    },
-    "kubernetesVersion": {
-      "type": "string",
-      "defaultValue": "1.11.3",
-      "allowedValues": [
-        "1.11.3",
-        "1.10.8",
-        "1.9.10",
-        "1.8.15",
-        "1.7.16"
-      ],
-      "metadata": {
-        "description": "The version of Kubernetes."
-      }
     }
   },
   "variables": {
-    "cleanResourceGroup": "[toLower(replace(resourceGroup().name,'-', ''))]",
-    "registryName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id))]",
-    "clusterName": "[concat(variables('cleanResourceGroup'), uniqueString(resourceGroup().id), '-aks')]",
+    "clusterName": "[concat('aks-', parameters('prefix'))]",
+    "clusterId": "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]",
     "linuxProfile": {
       "adminUsername": "[parameters('adminUserName')]",
       "sshRsaPublicKey": "[parameters('publicSSHKeyData')]"
     },
-    "HttpApplicationRouting": true,
-    "NetworkPlugin": "azure",
-    "ServiceCidr": "10.99.0.0/16",
-    "DnsServiceIp": "192.168.1.10",
-    "DockerBridgeCidr": "172.17.0.1/16"
+    "agentProfile": {
+      "count": "[parameters('agentCount')]",
+      "size": "[parameters('agentVMSize')]",
+      "subnet": "[parameters('subnetId')]"
+    },
+    "managerProfile": {
+      "httpRouting": false,
+      
+      "version": "[parameters('kubernetesVersion')]",
+      "dns": "[variables('clusterName')]"
+    },
+    "authProfile": {
+      "rbac": false,
+      "clientId": "[parameters('servicePrincipalClientId')]",
+      "clientSecret": "[parameters('servicePrincipalClientSecret')]"
+    },
+    "networkProfile": {
+      "plugin": "azure",
+      "serviceCIDR": "10.0.0.0/16",
+      "dnsIP": "10.0.0.10",
+      "dockerCIDR": "172.17.0.1/16"
+    }
+    
   },
   "resources": [
-    {
-      "comments": "## Container Registry ##",
-      "name": "[variables('registryName')]",
-      "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2017-10-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [],
-      "sku": {
-        "name": "Standard",
-        "tier": "Standard"
-      },
-      "properties": {
-        "adminUserEnabled": false
-      }
-    },
     {
       "comments": "## Managed Kubernetes ##",
       "name": "[variables('clusterName')]",
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2018-03-31",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
-      ],
       "properties": {
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
-        "enableRBAC": false,
+        "kubernetesVersion": "[variables('managerProfile').version]",
+        "enableRBAC": "[variables('authProfile').rbac]",
         "dnsPrefix": "[variables('clusterName')]",
         "agentPoolProfiles": [
           {
             "name": "agentpool",
             "osDiskSizeGB": 30,
-            "count": "[parameters('agentCount')]",
-            "vmSize": "[parameters('agentVMSize')]",
             "osType": "Linux",
             "storageProfile": "ManagedDisks",
-            "vnetSubnetID": "[parameters('subnetId')]"
+            "count": "[variables('agentProfile').count]",
+            "vmSize": "[variables('agentProfile').size]",
+            "vnetSubnetID": "[variables('agentProfile').subnet]"
           }
         ],
         "linuxProfile": {
@@ -140,36 +135,30 @@
           }
         },
         "servicePrincipalProfile": {
-          "clientId": "[parameters('servicePrincipalClientId')]",
-          "secret": "[parameters('servicePrincipalClientSecret')]"
+          "clientId": "[variables('authProfile').clientId]",
+          "secret": "[variables('authProfile').clientSecret]"
         },
         "addonProfiles": {
           "httpApplicationRouting": {
-            "enabled": "[variables('HttpApplicationRouting')]"
+            "enabled": "[variables('managerProfile').httpRouting]"
           }
         },
         "networkConfiguration": {
           "networkProfile": {
-            "networkPlugin": "azure",
-            "serviceCIDR": "10.99.0.0/16",
-            "dnsServiceIp": "10.99.0.10",
-            "dockerBridgeCidr": "172.17.0.1/16"
+            "networkPlugin": "[variables('networkProfile').plugin]",
+            "serviceCIDR": "[variables('networkProfile').serviceCIDR]",
+            "dnsServiceIp": "[variables('networkProfile').dnsIP]",
+            "dockerBridgeCidr": "[variables('networkProfile').dockerCIDR]"
           }
         }
       }
     }
   ],
   "outputs": {
-    "containerRegistry": {
-      "type": "object",
-      "value": {
-        "id": "[reference(resourceId('Microsoft.ContainerRegistry/registries',variables('registryName')),'2016-06-27-preview').loginServer]",
-        "name": "[variables('registryName')]"
-      }
-    },
     "controlPlane": {
       "type": "object",
       "value": {
+        "id": "[variables('clusterId')]",
         "fqdn": "[reference(variables('clusterName')).fqdn]"
       }
     }

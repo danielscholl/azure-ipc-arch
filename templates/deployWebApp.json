@@ -24,6 +24,22 @@
   },
   "resources": [
     {
+      "comments": "## Application Insights ##",
+      "name": "[variables('siteName')]",
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2015-05-01",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('siteName'))]": "Resource"
+      },
+      "properties": {
+        "Application_Type": "web",
+        "applicationId": "[variables('siteName')]",
+        "Request_Source": "AzureTfsExtensionAzureProject"
+      }
+    },
+    {
       "comments": "## Hosting Plan ##",
       "name": "[variables('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
@@ -51,7 +67,16 @@
       ],
       "properties": {
         "name": "[variables('siteName')]",
-        "serverFarmId": "[variables('hostingPlanName')]"
+        "serverFarmId": "[variables('hostingPlanName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', variables('siteName')), '2015-05-01').InstrumentationKey]"
+            }
+          ]
+        }
+
       },
       "resources": [
         {
@@ -65,7 +90,34 @@
           "properties": {
             "vnetResourceId": "[concat(resourceGroup().id, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
           }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "name": "logs",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]"
+          ],
+          "properties": {
+            "httpLogs": {
+              "fileSystem": {
+                "retentionInMb": 100,
+                "retentionInDays": 30,
+                "enabled": true
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "2016-08-01",
+          "name": "Microsoft.ApplicationInsights.AzureWebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]"
+          ],
+          "properties": {}
         }
+
       ]
     }
   ],

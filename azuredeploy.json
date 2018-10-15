@@ -508,7 +508,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('templateURL'), 'deployAKS2.json')]",
+          "uri": "[concat(parameters('templateURL'), 'deployAKS.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
