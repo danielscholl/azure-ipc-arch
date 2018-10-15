@@ -67,12 +67,19 @@
       },
       "defaultValue": "10.0.18.0/24"
     },
-    "gatewayCIDR": {
+    "vpngatewayCIDR": {
       "type": "string",
       "metadata": {
-        "description": "Subnet 4 Address Prefix (CIDR)"
+        "description": "Subnet 5 Address Prefix (CIDR)"
       },
       "defaultValue": "10.0.20.0/28"
+    },
+    "appgatewayCIDR": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 6 Address Prefix (CIDR)"
+      },
+      "defaultValue": "10.0.20.16/28"
     },
     "remoteAccessACL": {
       "type": "string",
@@ -897,7 +904,7 @@
             "value": "[parameters('initials')]"
           },
           "subnetId": {
-            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet5Id]"
+            "value": "[reference('TemplateVNet').outputs.subnets.value.subnet6Id]"
           },
           "siteName": {
             "value": "[reference('TemplateWebApp').outputs.web.value.name]"

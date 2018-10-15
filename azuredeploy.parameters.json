@@ -20,8 +20,11 @@
     "manageCIDR": {
       "value": "10.100.18.0/24"
     },
-    "gatewayCIDR": {
+    "vpngatewayCIDR": {
       "value": "10.100.20.0/28"
+    },
+    "appgatewayCIDR": {
+      "value": "10.100.20.16/28"
     },
     "agentSize": {
       "value": "Standard_DS2_v2"

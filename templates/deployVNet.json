@@ -43,7 +43,13 @@
     "subnet5Prefix": {
       "type": "string",
       "metadata": {
-        "description": "Subnet 4 CIDR"
+        "description": "Subnet 5 CIDR"
+      }
+    },
+    "subnet6Prefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet 6 CIDR"
       }
     },
     "remoteAccessACL": {
@@ -73,6 +79,8 @@
     "SubNet4Id": "[concat(variables('VNetId'), '/subnets/', variables('Subnet4Name'))]",
     "Subnet5Name": "GatewaySubnet",
     "SubNet5Id": "[concat(variables('VNetId'), '/subnets/', variables('Subnet5Name'))]",
+    "Subnet6Name": "AppGatewaySubnet",
+    "SubNet6Id": "[concat(variables('VNetId'), '/subnets/', variables('Subnet6Name'))]",
     "Nsg1Name": "[concat(variables('VNetName'), '-', variables('Subnet1Name'), '-nsg')]",
     "Nsg2Name": "[concat(variables('VNetName'), '-', variables('Subnet2Name'), '-nsg')]",
     "Nsg3Name": "[concat(variables('VNetName'), '-', variables('Subnet3Name'), '-nsg')]",
@@ -386,6 +394,12 @@
             "properties": {
               "addressPrefix": "[parameters('Subnet5Prefix')]"
             }
+          },
+          {
+            "name": "[variables('Subnet6Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('Subnet6Prefix')]"
+            }
           }
         ]
       }
@@ -424,7 +438,9 @@
         "subnet4Name": "[variables('Subnet4Name')]",
         "subnet4Id": "[variables('subnet4Id')]",
         "subnet5Name": "[variables('Subnet5Name')]",
-        "subnet5Id": "[variables('subnet5Id')]"
+        "subnet5Id": "[variables('subnet5Id')]",
+        "subnet6Name": "[variables('Subnet6Name')]",
+        "subnet6Id": "[variables('subnet6Id')]"
       }
     }
   }
