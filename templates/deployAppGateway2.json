@@ -1,0 +1,144 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "prefix": {
+        "type": "string",
+        "metadata": {
+          "description": "Small unique string."
+        },
+        "minLength": 2,
+        "maxLength": 5
+      },
+      "subnetId": {
+        "type": "string",
+        "metadata": {
+          "Description": "The Subnet Id to use for the Gateway"
+        }
+      },
+      "siteName": {
+        "type": "string",
+        "metadata": {
+          "Description": "The Default Web Site to balance to."
+        }
+      }
+    },
+    "variables": {
+      "applicationGatewayName": "[concat(parameters('prefix'), '-appgateway')]",
+      "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName'))]",
+      "publicIpName": "[concat(variables('applicationGatewayName'), '-ip')]",
+      "publicIpId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
+    },
+    "resources": [
+      {
+        "comments": "## VPN Gateway Public IP ##",
+        "name": "[variables('publicIpName')]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "apiVersion": "2018-08-01",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic"
+        }
+      },
+      {
+        "apiVersion": "2017-06-01",
+        "name": "[variables('applicationGatewayName')]",
+        "type": "Microsoft.Network/applicationGateways",
+        "location": "[resourceGroup().name]",
+        "dependsOn": [
+          "[variables('publicIpName')]"
+        ],
+        "properties": {
+          "sku": {
+            "name": "Standard_Small",
+            "tier": "Standard",
+            "capacity": 1
+          },
+          "gatewayIPConfigurations": [
+            {
+              "name": "appGatewayIpConfig",
+              "properties": {
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                }
+              }
+            }
+          ],
+          "frontendIPConfigurations": [
+            {
+              "name": "appGatewayFrontendIP",
+              "properties": {
+                "PublicIPAddress": {
+                  "id": "[variables('publicIpId')]"
+                }
+              }
+            }
+          ],
+          "frontendPorts": [
+            {
+              "name": "appGatewayFrontendPort",
+              "properties": {
+                "Port": 80
+              }
+            }
+          ],
+          "backendAddressPools": [
+            {
+              "name": "appGatewayBackendPool",
+              "properties": {
+                "BackendAddresses": [
+                  {
+                    "IpAddress": "[concat(parameters('siteName'), '.azurewebsites.net')]"
+                  }
+                ]
+              }
+            }
+          ],
+          "backendHttpSettingsCollection": [
+            {
+              "name": "appGatewayBackendHttpSettings",
+              "properties": {
+                "Port": 80,
+                "Protocol": "Http",
+                "CookieBasedAffinity": "Disabled"
+              }
+            }
+          ],
+          "httpListeners": [
+            {
+              "name": "appGatewayHttpListener",
+              "properties": {
+                "FrontendIPConfiguration": {
+                  "Id": "[concat(variables('applicationGatewayID'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+                },
+                "FrontendPort": {
+                  "Id": "[concat(variables('applicationGatewayID'), '/frontendPorts/appGatewayFrontendPort')]"
+                },
+                "Protocol": "Http",
+                "SslCertificate": null
+              }
+            }
+          ],
+          "requestRoutingRules": [
+            {
+              "Name": "rule1",
+              "properties": {
+                "RuleType": "Basic",
+                "httpListener": {
+                  "id": "[concat(variables('applicationGatewayID'), '/httpListeners/appGatewayHttpListener')]"
+                },
+                "backendAddressPool": {
+                  "id": "[concat(variables('applicationGatewayID'), '/backendAddressPools/appGatewayBackendPool')]"
+                },
+                "backendHttpSettings": {
+                  "id": "[concat(variables('applicationGatewayID'), '/backendHttpSettingsCollection/appGatewayBackendHttpSettings')]"
+                }
+              }
+            }
+          ]
+        }
+      }
+  
+    ],
+    "outputs": {}
+  }
