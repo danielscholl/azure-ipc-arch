@@ -27,30 +27,7 @@ fi
 ###############################
 ## FUNCTIONS                 ##
 ###############################
-function CreateResourceGroup() {
-  # Required Argument $1 = RESOURCE_GROUP
-  # Required Argument $2 = LOCATION
 
-  if [ -z $1 ]; then
-    tput setaf 1; echo 'ERROR: Argument $1 (RESOURCE_GROUP) not received'; tput sgr0
-    exit 1;
-  fi
-  if [ -z $2 ]; then
-    tput setaf 1; echo 'ERROR: Argument $2 (LOCATION) not received'; tput sgr0
-    exit 1;
-  fi
-
-  local _result=$(az group show --name $1)
-  if [ "$_result"  == "" ]
-    then
-      OUTPUT=$(az group create --name $1 \
-        --location $2 \
-        --tags environment="demo" \
-        -ojsonc)
-    else
-      tput setaf 3;  echo "Resource Group $1 already exists."; tput sgr0
-    fi
-}
 function CreateServicePrincipal() {
     # Required Argument $1 = PRINCIPAL_NAME
 
@@ -106,15 +83,16 @@ function CreateServicePrincipal() {
 
 function CreateSSHKeys() {
   # Required Argument $1 = SSH_USER
-  if [ -d ./.ssh ]
+  if [ -d ~/.ssh ]
   then 
     tput setaf 3;  echo "SSH Keys for User $1: "; tput sgr0
   else 
-    mkdir .ssh && cd .ssh
-    ssh-keygen -t rsa -b 2048 -C $1 -f id_rsa && cd ..
+    local _BASE_DIR = ${pwd}
+    mkdir ~/.ssh && cd ~/.ssh
+    ssh-keygen -t rsa -b 2048 -C $1 -f id_rsa && cd $_BASE_DIR
   fi 
 
- _result=`cat ./.ssh/id_rsa.pub`
+ _result=`cat ~/.ssh/id_rsa.pub`
  #echo $_result
 }
 
@@ -123,10 +101,6 @@ function CreateSSHKeys() {
 ###############################
 ## Azure Intialize           ##
 ###############################
-
-# tput setaf 2; echo 'Creating Resource Group...' ; tput sgr0
-# RESOURCE_GROUP="$INITIALS-arch"
-# CreateResourceGroup $RESOURCE_GROUP $AZURE_LOCATION
 
 tput setaf 2; echo 'Creating Service Principal...' ; tput sgr0
 PrincipalName="$INITIALS-Principal"
